@@ -1,0 +1,3528 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Explore retail sales, refunds and product performance with Summit & Pine’s fictional outdoor-gear demo. Private CSV reporting, with no account required."
+    />
+    <title>Summit & Pine · Retail Insights</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #20382f;
+        --muted: #6c7a73;
+        --green: #26745d;
+        --green-dark: #1d5948;
+        --green-light: #e8f2eb;
+        --sidebar: #193d33;
+        --line: #e4e9e5;
+        --paper: #f5f7f5;
+        --white: #fff;
+        --amber: #a56d37;
+        --red: #ac5a53;
+        font-family:
+          Inter,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        font-size: 14px;
+        font-synthesis: none;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        line-height: 1.5;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+        color: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      button,
+      a,
+      input,
+      select {
+        -webkit-tap-highlight-color: transparent;
+      }
+      a {
+        color: inherit;
+      }
+      svg {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.65;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+      }
+      button svg,
+      a svg {
+        pointer-events: none;
+      }
+      .sprite {
+        position: absolute;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      :focus-visible {
+        outline: 3px solid #95bea6;
+        outline-offset: 4px;
+      }
+      .skip {
+        position: fixed;
+        left: 20px;
+        top: -100px;
+        z-index: 100;
+        padding: 12px 18px;
+        background: white;
+        border-radius: 8px;
+      }
+      .skip:focus {
+        top: 12px;
+      }
+      .sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: 220px;
+        background: var(--sidebar);
+        color: #b7cdc1;
+        padding: 32px 18px 18px;
+        display: flex;
+        flex-direction: column;
+        z-index: 10;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: #f3f2e9;
+        margin: 0 7px 48px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 21px;
+        letter-spacing: -0.55px;
+        white-space: nowrap;
+        line-height: 1.2;
+      }
+      .brand-symbol svg {
+        width: 30px;
+        height: 30px;
+        stroke-width: 1.5;
+        color: #bbcfbc;
+      }
+      .brand-sub {
+        display: block;
+        font-family:
+          Inter,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        font-size: 7px;
+        letter-spacing: 2.9px;
+        margin-top: 8px;
+        color: #9cb9a9;
+      }
+      .nav-label {
+        font-size: 9px;
+        letter-spacing: 1.4px;
+        color: #93b0a1;
+        margin: 0 12px 15px;
+      }
+      .sidebar nav {
+        display: grid;
+        gap: 6px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 12px;
+        background: none;
+        border: 0;
+        border-radius: 7px;
+        text-decoration: none;
+        text-align: left;
+        color: #bbcec2;
+        font-size: 11px;
+      }
+      .nav-item svg {
+        width: 17px;
+        height: 17px;
+      }
+      .nav-item.active,
+      .nav-item:hover {
+        background: #2d5144;
+        color: #f0f4ee;
+      }
+      .sidebar-note {
+        margin-top: auto;
+        padding: 24px 11px;
+        border-bottom: 1px solid #3c5e4f;
+      }
+      .privacy-icon {
+        height: 35px;
+        width: 35px;
+        display: grid;
+        place-items: center;
+        background: #315143;
+        border-radius: 9px;
+        margin-bottom: 14px;
+        color: #b4cbb6;
+      }
+      .privacy-icon svg {
+        width: 19px;
+        height: 19px;
+      }
+      .sidebar-note strong {
+        font-size: 11px;
+        font-weight: 550;
+        color: #e1e9dd;
+      }
+      .sidebar-note p {
+        font-size: 11px;
+        line-height: 1.8;
+        color: #a3bdad;
+        margin: 8px 0 14px;
+      }
+      .privacy-tag {
+        font-size: 9px;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 5px 7px;
+        border: 1px solid #547060;
+        border-radius: 4px;
+        color: #b6cfbd;
+      }
+      .privacy-tag span {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #9bbd9b;
+      }
+      .source-link {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 20px 8px 0;
+        font-size: 10px;
+        text-decoration: none;
+        color: #b2c9b9;
+      }
+      .source-link svg {
+        width: 14px;
+        height: 14px;
+      }
+      .source-link svg:last-child {
+        margin-left: auto;
+        width: 12px;
+      }
+      .app-shell {
+        margin-left: 220px;
+      }
+      .topbar {
+        height: 74px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 0 34px;
+        border-bottom: 1px solid var(--line);
+        background: #fff;
+      }
+      .breadcrumbs {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .breadcrumbs span {
+        color: #bbc5bd;
+      }
+      .breadcrumbs strong {
+        font-weight: 500;
+        color: var(--ink);
+      }
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 17px;
+      }
+      .source-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .source-badge > span:first-child {
+        width: 6px;
+        height: 6px;
+        background: #6e9c7e;
+        border-radius: 50%;
+        box-shadow: 0 0 0 3px #edf4ed;
+      }
+      .icon-button {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        display: inline-grid;
+        place-items: center;
+        background: #fff;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+      .icon-button svg {
+        width: 15px;
+        height: 15px;
+      }
+      .icon-button:hover {
+        background: #f2f7f2;
+        color: var(--green);
+      }
+      main {
+        max-width: 1550px;
+        margin: 0 auto;
+        padding: 32px 34px 16px;
+      }
+      .page-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 25px;
+      }
+      .eyebrow {
+        font-size: 8px;
+        font-weight: 650;
+        letter-spacing: 1.6px;
+        color: #7b8f80;
+        margin: 0 0 11px;
+      }
+      h1 {
+        font-size: 30px;
+        line-height: 1.2;
+        letter-spacing: -1.25px;
+        font-weight: 620;
+        margin: 0;
+      }
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+      h2 {
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: -0.25px;
+      }
+      h3 {
+        font-size: 13px;
+      }
+      .page-description {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 11px;
+      }
+      .heading-actions {
+        display: flex;
+        gap: 9px;
+      }
+      .button {
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 1px solid transparent;
+        border-radius: 7px;
+        padding: 10px 13px;
+        text-decoration: none;
+        font-size: 10px;
+        font-weight: 550;
+        white-space: nowrap;
+      }
+      .button svg {
+        width: 14px;
+        height: 14px;
+      }
+      .primary {
+        background: var(--green);
+        color: #fff;
+        box-shadow: 0 3px 5px #1c594412;
+      }
+      .primary:hover {
+        background: var(--green-dark);
+      }
+      .secondary {
+        background: #fff;
+        border-color: #dce5de;
+        color: #5b7060;
+      }
+      .secondary:hover {
+        background: #f3f7f3;
+        border-color: #b2c7b7;
+      }
+      .button:disabled {
+        opacity: 0.5;
+        cursor: wait;
+      }
+      .demo-note {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        background: linear-gradient(110deg, #ecf2e8, #f2f5ed);
+        border: 1px solid #dce6d7;
+        padding: 16px 18px;
+        border-radius: 9px;
+        margin-bottom: 22px;
+      }
+      .note-mark {
+        height: 36px;
+        width: 36px;
+        border-radius: 9px;
+        display: grid;
+        place-items: center;
+        background: #dfead9;
+        color: #6b8c68;
+        flex-shrink: 0;
+      }
+      .note-mark svg {
+        width: 22px;
+        height: 22px;
+      }
+      .demo-note strong {
+        font-size: 11px;
+        color: #54704d;
+        font-weight: 600;
+      }
+      .demo-note p {
+        font-size: 10px;
+        color: #70826b;
+        margin-top: 5px;
+      }
+      .text-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: none;
+        border: 0;
+        color: #70836c;
+        font-size: 9px;
+        padding: 4px 0;
+        white-space: nowrap;
+      }
+      .text-button svg {
+        width: 12px;
+        height: 12px;
+      }
+      .text-button:hover {
+        color: var(--green);
+      }
+      .demo-note > .text-button {
+        margin-left: auto;
+      }
+      .report-controls {
+        display: flex;
+        gap: 13px;
+        align-items: center;
+        margin: 0 0 20px;
+      }
+      .period-picker {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        background: #fff;
+        border: 1px solid #dde5dd;
+        border-radius: 6px;
+        padding: 7px 10px;
+        flex-shrink: 0;
+      }
+      .period-picker svg {
+        width: 14px;
+        height: 14px;
+        color: #849884;
+      }
+      select {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 8px 25px 8px 10px;
+        font-size: 10px;
+        max-width: 230px;
+      }
+      .period-picker select {
+        border: 0;
+        padding: 2px 17px 2px 0;
+        max-width: 150px;
+      }
+      .date-caption {
+        font-size: 10px;
+        color: #7b877e;
+      }
+      .filter-selects {
+        margin-left: auto;
+        display: flex;
+        gap: 9px;
+      }
+      .custom-dates {
+        display: flex;
+        align-items: end;
+        gap: 10px;
+        padding: 14px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        margin-bottom: 18px;
+      }
+      .custom-dates label {
+        font-size: 10px;
+        color: var(--muted);
+        display: grid;
+        gap: 5px;
+      }
+      .custom-dates input {
+        font-size: 11px;
+        padding: 8px;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+      }
+      .custom-dates .button {
+        min-height: 34px;
+        font-size: 10px;
+      }
+      .inline-error {
+        font-size: 11px;
+        color: #a74f43;
+        background: #fff1ed;
+        border: 1px solid #f0d9d1;
+        border-radius: 6px;
+        padding: 12px;
+        line-height: 1.7;
+        margin: 12px 0;
+      }
+      .coverage-note {
+        font-size: 10px;
+        line-height: 1.7;
+        color: #89672e;
+        background: #fff8e9;
+        border: 1px solid #efe4c9;
+        border-radius: 6px;
+        padding: 10px 13px;
+        margin-bottom: 17px;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 23px;
+      }
+      .stat-card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        padding: 16px;
+      }
+      .stat-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 5px;
+      }
+      .stat-top > span {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .stat-icon {
+        height: 26px;
+        width: 26px;
+        border-radius: 7px;
+        display: grid;
+        place-items: center;
+        color: #78917b;
+        background: #f0f4ef;
+      }
+      .stat-icon svg {
+        height: 14px;
+        width: 14px;
+      }
+      .stat-card > strong {
+        display: block;
+        margin: 9px 0 11px;
+        font-size: 27px;
+        font-weight: 550;
+        letter-spacing: -1px;
+        line-height: 1.3;
+      }
+      .stat-bottom {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .delta {
+        font-size: 8px;
+        font-weight: 550;
+        color: #26745d;
+        background: #eaf4ec;
+        border-radius: 4px;
+        padding: 3px 5px;
+        white-space: nowrap;
+      }
+      .delta.negative {
+        color: #a86855;
+        background: #fcf0e9;
+      }
+      .delta.neutral {
+        color: #7a857d;
+        background: #f0f3f0;
+      }
+      .stat-bottom small {
+        font-size: 8px;
+        color: #7f8c82;
+      }
+      .chart-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.75fr) minmax(260px, 1fr);
+        gap: 18px;
+      }
+      .panel {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        min-width: 0;
+        box-shadow: 0 2px 3px #1b3c2c02;
+      }
+      .panel-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 21px 20px 13px;
+      }
+      .panel-heading p {
+        font-size: 10px;
+        color: var(--muted);
+        margin-top: 6px;
+      }
+      .chart-key {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 9px;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+      .chart-key span {
+        height: 6px;
+        width: 6px;
+        border-radius: 50%;
+        background: #40836b;
+      }
+      .trend-chart {
+        padding: 0 16px;
+        min-height: 245px;
+      }
+      .trend-chart svg {
+        width: 100%;
+        height: auto;
+        display: block;
+        overflow: visible;
+      }
+      .chart-inspector {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        margin: 0 20px;
+        padding: 13px 0 17px;
+        border-top: 1px solid #eef1ee;
+        font-size: 9px;
+        color: #738176;
+      }
+      .chart-inspector label {
+        white-space: nowrap;
+      }
+      .chart-inspector input {
+        min-width: 0;
+        flex: 1;
+        accent-color: #5c8b6c;
+        height: 3px;
+        cursor: pointer;
+      }
+      .chart-inspector output {
+        font-size: 9px;
+        white-space: nowrap;
+        min-width: 110px;
+        text-align: right;
+        color: #526e5c;
+      }
+      .category-chart {
+        height: 175px;
+        display: grid;
+        place-items: center;
+      }
+      .category-chart svg {
+        height: 165px;
+        width: 165px;
+        stroke-width: 0;
+        overflow: visible;
+      }
+      .category-legend {
+        display: grid;
+        gap: 10px;
+        padding: 8px 21px 20px;
+      }
+      .legend-row {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .legend-row > .dot {
+        height: 7px;
+        width: 7px;
+        border-radius: 3px;
+        flex-shrink: 0;
+      }
+      .legend-row > svg {
+        width: 8px;
+        height: 8px;
+      }
+      .share-cell > svg {
+        width: 46px;
+        height: 4px;
+      }
+      .legend-row strong {
+        font-weight: 500;
+        color: #4a6552;
+        margin-left: auto;
+      }
+      .legend-row small {
+        font-size: 9px;
+        min-width: 26px;
+        text-align: right;
+        color: #829185;
+      }
+      .insight-strip {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        margin: 20px 0 23px;
+        padding: 16px 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fbfcf9;
+      }
+      .insight-icon {
+        width: 33px;
+        height: 33px;
+        background: #eaf1e4;
+        border-radius: 8px;
+        display: grid;
+        place-items: center;
+        color: #81956a;
+        flex-shrink: 0;
+      }
+      .insight-icon svg {
+        width: 17px;
+        height: 17px;
+      }
+      .insight-strip strong {
+        font-size: 11px;
+        color: #54704e;
+        font-weight: 550;
+      }
+      .insight-strip p {
+        font-size: 10px;
+        color: #7d8b76;
+        margin-top: 5px;
+        line-height: 1.6;
+      }
+      .insight-strip > .text-button {
+        margin-left: auto;
+      }
+      .products-panel {
+        scroll-margin-top: 20px;
+      }
+      .count-pill {
+        font-size: 9px;
+        letter-spacing: 0;
+        font-weight: 500;
+        background: #eef4eb;
+        color: #7e9676;
+        padding: 2px 6px;
+        border: 1px solid #e4ebdd;
+        border-radius: 4px;
+        margin-left: 5px;
+      }
+      .table-scroll-hint {
+        display: none;
+        margin: 0 20px 12px;
+        font-size: 11px;
+        color: #526e5c;
+      }
+      @media (max-width: 720px) {
+        .table-scroll-hint {
+          display: block;
+        }
+      }
+      .table-context {
+        font-size: 9px;
+        color: #849281;
+        white-space: nowrap;
+      }
+      .table-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 2px 20px 17px;
+      }
+      .search {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 9px 10px;
+        width: 245px;
+        max-width: 60%;
+      }
+      .search svg {
+        width: 13px;
+        height: 13px;
+        color: #8a9b8b;
+      }
+      .search input {
+        border: 0;
+        background: none;
+        outline: 0;
+        font-size: 10px;
+        width: 100%;
+        min-width: 0;
+      }
+      .search input::placeholder {
+        color: #7c8b7e;
+      }
+      .search:focus-within {
+        outline: 2px solid #a3c2ac;
+        outline-offset: 2px;
+      }
+      .sort-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .sort-label select {
+        font-size: 10px;
+        padding: 7px 23px 7px 9px;
+        max-width: 150px;
+      }
+      .table-scroll {
+        overflow: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        white-space: nowrap;
+      }
+      thead {
+        background: #fafcf9;
+      }
+      th {
+        font-size: 8px;
+        letter-spacing: 0.6px;
+        font-weight: 550;
+        color: #7e8b81;
+        padding: 12px 18px;
+        border-top: 1px solid #eef1ec;
+        border-bottom: 1px solid #eef1ec;
+      }
+      td {
+        padding: 14px 18px;
+        border-bottom: 1px solid #edf1eb;
+        font-size: 11px;
+        color: #627765;
+      }
+      th:first-child,
+      td:first-child {
+        padding-left: 20px;
+        width: 39%;
+      }
+      .product-name {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .product-mark {
+        height: 34px;
+        width: 34px;
+        display: grid;
+        place-items: center;
+        border-radius: 7px;
+        background: #f0f2e5;
+        color: #849266;
+        flex-shrink: 0;
+      }
+      .product-mark.pack {
+        background: #ebf0e8;
+        color: #7d9374;
+      }
+      .product-mark.tent {
+        background: #f7ecdf;
+        color: #b69774;
+      }
+      .product-mark.flask {
+        background: #edf1f0;
+        color: #829b91;
+      }
+      .product-mark.lantern {
+        background: #f4f0df;
+        color: #b5a276;
+      }
+      .product-mark svg {
+        height: 19px;
+        width: 19px;
+      }
+      .product-name strong {
+        display: block;
+        font-size: 11px;
+        color: #425f4b;
+        font-weight: 550;
+      }
+      .product-name small {
+        display: block;
+        font-size: 9px;
+        color: #7a8c7e;
+        margin-top: 3px;
+      }
+      .money-cell {
+        font-weight: 550;
+        color: #3b614c;
+      }
+      .refund-cell {
+        color: #8b806b;
+      }
+      .share-cell {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 9px;
+        color: #758773;
+      }
+      .share-bar {
+        height: 4px;
+        width: 46px;
+        border-radius: 3px;
+        background: #edf2e9;
+        overflow: hidden;
+      }
+      .share-bar > span {
+        display: block;
+        height: 100%;
+        background: #8daa79;
+        border-radius: 3px;
+      }
+      .table-footer {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        justify-content: space-between;
+        padding: 14px 20px;
+        font-size: 9px;
+        color: #7e8e7e;
+      }
+      .pagination {
+        display: flex;
+        gap: 7px;
+      }
+      .pagination button {
+        background: #fff;
+        border: 1px solid var(--line);
+        padding: 5px 8px;
+        border-radius: 4px;
+        font-size: 9px;
+        color: var(--muted);
+      }
+      .pagination button:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
+      .empty-row {
+        text-align: center;
+        padding: 35px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 22px 1px 8px;
+        font-size: 9px;
+        color: #7f8c80;
+      }
+      footer > span {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      footer svg {
+        height: 12px;
+        width: 12px;
+      }
+      .toast {
+        position: fixed;
+        left: calc(50% + 110px);
+        bottom: 25px;
+        transform: translateX(-50%);
+        border: 1px solid #496856;
+        background: #234b3c;
+        color: #fff;
+        box-shadow: 0 15px 35px #16372230;
+        padding: 13px 19px;
+        border-radius: 8px;
+        font-size: 12px;
+        max-width: min(550px, 90vw);
+        z-index: 100;
+      }
+      dialog {
+        border: 1px solid #dde7dd;
+        border-radius: 14px;
+        padding: 27px;
+        width: 560px;
+        max-width: calc(100vw - 30px);
+        max-height: calc(100dvh - 40px);
+        color: var(--ink);
+        box-shadow: 0 30px 100px #183a2d35;
+      }
+      dialog::backdrop {
+        background: #1c302961;
+        backdrop-filter: blur(4px);
+      }
+      .dialog-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+      }
+      .dialog-heading h2 {
+        font-size: 25px;
+        letter-spacing: -0.9px;
+      }
+      .dialog-heading .eyebrow {
+        margin-bottom: 9px;
+      }
+      .dialog-intro {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.8;
+        margin: 16px 0 22px;
+      }
+      .file-picker {
+        position: relative;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        gap: 9px;
+        padding: 25px 18px;
+        border: 1px dashed #a5c0a9;
+        background: #f6faf5;
+        border-radius: 9px;
+        text-align: center;
+        cursor: pointer;
+        overflow: hidden;
+      }
+      .upload-mark {
+        height: 36px;
+        width: 36px;
+        display: grid;
+        place-items: center;
+        background: #e6f0e3;
+        color: #7a9a75;
+        border-radius: 9px;
+        margin-bottom: 2px;
+      }
+      .upload-mark svg {
+        width: 20px;
+        height: 20px;
+      }
+      .file-picker strong {
+        font-size: 13px;
+        font-weight: 550;
+      }
+      .file-picker > span:not(.upload-mark) {
+        font-size: 10px;
+        color: #758a75;
+      }
+      .file-picker input {
+        max-width: 100%;
+        font-size: 10px;
+        margin-top: 10px;
+      }
+      .file-picker:focus-within {
+        outline: 3px solid #a3c2ac;
+        outline-offset: 3px;
+      }
+      .template-note {
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        margin-top: 20px;
+      }
+      .template-note strong {
+        font-size: 12px;
+        font-weight: 550;
+      }
+      .template-note p {
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.8;
+        margin: 7px 0 14px;
+      }
+      .privacy-caption {
+        font-size: 10px;
+        line-height: 1.8;
+        color: #758874;
+        display: flex;
+        align-items: flex-start;
+        gap: 7px;
+        margin-top: 19px;
+      }
+      .privacy-caption svg {
+        height: 13px;
+        width: 13px;
+        margin-top: 2px;
+      }
+      .metric-definitions {
+        margin: 23px 0 0;
+      }
+      .metric-definitions dt {
+        font-size: 12px;
+        font-weight: 600;
+        margin: 20px 0 6px;
+      }
+      .metric-definitions dd {
+        font-size: 11px;
+        line-height: 1.9;
+        color: var(--muted);
+        margin: 0;
+      }
+      .chart-empty {
+        font-size: 12px;
+        color: var(--muted);
+        text-align: center;
+        padding: 70px 15px;
+      }
+      .legend-empty {
+        font-size: 12px;
+        color: var(--muted);
+        text-align: center;
+      }
+      @media (min-width: 1550px) {
+        .page-description {
+          font-size: 13px;
+        }
+        h1 {
+          font-size: 34px;
+        }
+        .button {
+          font-size: 12px;
+        }
+        .stat-card > strong {
+          font-size: 32px;
+        }
+        .panel-heading h2 {
+          font-size: 17px;
+        }
+        .stat-top > span {
+          font-size: 12px;
+        }
+        .stat-bottom small,
+        .delta {
+          font-size: 10px;
+        }
+        td {
+          font-size: 12px;
+        }
+        .product-name strong {
+          font-size: 12px;
+        }
+        .product-name small {
+          font-size: 10px;
+        }
+      }
+      @media (max-width: 1200px) {
+        .sidebar {
+          width: 190px;
+          padding-left: 12px;
+          padding-right: 12px;
+        }
+        .brand {
+          font-size: 18px;
+          gap: 7px;
+        }
+        .brand-symbol svg {
+          width: 27px;
+        }
+        .nav-item {
+          font-size: 10px;
+          gap: 8px;
+        }
+        .app-shell {
+          margin-left: 190px;
+        }
+        .topbar {
+          padding: 0 25px;
+        }
+        main {
+          padding: 28px 25px 15px;
+        }
+        .page-heading {
+          align-items: flex-start;
+        }
+        .heading-actions {
+          flex-wrap: wrap;
+          justify-content: flex-end;
+          max-width: 145px;
+        }
+        .heading-actions .button {
+          font-size: 9px;
+          min-height: 34px;
+          padding: 8px 10px;
+        }
+        .stat-card {
+          padding: 13px;
+        }
+        .stat-card > strong {
+          font-size: 23px;
+        }
+        .stat-top > span {
+          font-size: 10px;
+        }
+        .stat-icon {
+          height: 23px;
+          width: 23px;
+        }
+        .stat-bottom small {
+          font-size: 7px;
+        }
+        .chart-grid {
+          grid-template-columns: minmax(0, 1.65fr) minmax(245px, 1fr);
+          gap: 14px;
+        }
+        .trend-chart {
+          min-height: 220px;
+        }
+        .panel-heading {
+          padding-left: 17px;
+          padding-right: 17px;
+        }
+        .panel-heading h2 {
+          font-size: 14px;
+        }
+        .panel-heading p {
+          font-size: 9px;
+        }
+        .category-legend {
+          padding-left: 17px;
+          padding-right: 17px;
+        }
+        .chart-inspector {
+          margin-left: 17px;
+          margin-right: 17px;
+          gap: 8px;
+        }
+        .chart-inspector label {
+          font-size: 8px;
+        }
+        .chart-inspector output {
+          font-size: 8px;
+          min-width: 98px;
+        }
+        .demo-note > .text-button {
+          display: none;
+        }
+        .date-caption {
+          font-size: 9px;
+        }
+        .filter-selects select {
+          max-width: 160px;
+          font-size: 9px;
+        }
+        .table-footnote {
+          display: none;
+        }
+        .toast {
+          left: calc(50% + 95px);
+        }
+      }
+      @media (max-width: 960px) {
+        .chart-grid {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .trend-chart {
+          min-height: 0;
+        }
+        .category-panel {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          align-items: center;
+        }
+        .category-panel .panel-heading {
+          grid-column: 1/-1;
+        }
+        .category-chart {
+          height: 190px;
+          padding-bottom: 10px;
+        }
+        .category-legend {
+          padding-top: 0;
+          padding-bottom: 20px;
+          padding-right: 24px;
+          gap: 16px;
+        }
+        .page-heading {
+          display: block;
+        }
+        .heading-actions {
+          max-width: none;
+          justify-content: flex-start;
+          margin-top: 17px;
+        }
+        .heading-actions .button {
+          min-height: 38px;
+          font-size: 11px;
+        }
+        .report-controls {
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+        .filter-selects {
+          margin-left: 0;
+          width: 100%;
+          justify-content: space-between;
+        }
+        .filter-selects label {
+          width: 50%;
+        }
+        .filter-selects select {
+          width: 100%;
+          max-width: none;
+          font-size: 10px;
+        }
+        .stats {
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+        }
+        .stat-card {
+          padding: 17px;
+        }
+        .stat-card > strong {
+          font-size: 28px;
+        }
+        .stat-top > span {
+          font-size: 12px;
+        }
+        .stat-bottom small {
+          font-size: 9px;
+        }
+        .delta {
+          font-size: 9px;
+        }
+        .insight-strip {
+          flex-wrap: wrap;
+        }
+        .insight-strip > div {
+          flex: 1;
+          min-width: 190px;
+        }
+        .insight-strip > .text-button {
+          margin-left: 46px;
+        }
+        .table-context {
+          display: none;
+        }
+      }
+      @media (max-width: 720px) {
+        .sidebar {
+          position: static;
+          width: 100%;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+          padding: 17px 20px;
+        }
+        .brand {
+          font-size: 20px;
+          margin: 0;
+          gap: 9px;
+        }
+        .brand-sub {
+          font-size: 6px;
+          letter-spacing: 2.6px;
+        }
+        .brand-symbol svg {
+          width: 29px;
+          height: 29px;
+        }
+        .nav-label,
+        .sidebar-note,
+        .source-link {
+          display: none;
+        }
+        .sidebar nav {
+          display: flex;
+          gap: 5px;
+        }
+        .nav-item {
+          width: 40px;
+          height: 40px;
+          justify-content: center;
+          padding: 10px;
+          font-size: 0;
+          gap: 0;
+        }
+        .nav-item.active,
+        .nav-item[href="#products"] {
+          display: none;
+        }
+        .nav-item svg {
+          width: 18px;
+          height: 18px;
+        }
+        .app-shell {
+          margin-left: 0;
+        }
+        .topbar {
+          height: 51px;
+          padding: 0 20px;
+        }
+        .breadcrumbs {
+          font-size: 10px;
+          gap: 8px;
+        }
+        .source-badge {
+          font-size: 9px;
+          max-width: 150px;
+        }
+        .topbar-right {
+          gap: 8px;
+        }
+        .topbar .icon-button {
+          display: none;
+        }
+        main {
+          padding: 27px 20px 12px;
+        }
+        h1 {
+          font-size: 29px;
+          letter-spacing: -1px;
+          max-width: 330px;
+        }
+        .eyebrow {
+          font-size: 8px;
+        }
+        .page-description {
+          font-size: 12px;
+          line-height: 1.8;
+          max-width: 330px;
+        }
+        .heading-actions {
+          margin-top: 19px;
+        }
+        .heading-actions .button {
+          min-height: 44px;
+          font-size: 12px;
+        }
+        .demo-note {
+          padding: 15px;
+          gap: 12px;
+          align-items: flex-start;
+        }
+        .demo-note strong {
+          font-size: 12px;
+        }
+        .demo-note p {
+          font-size: 11px;
+          line-height: 1.8;
+        }
+        .note-mark {
+          width: 29px;
+          height: 29px;
+        }
+        .note-mark svg {
+          width: 19px;
+          height: 19px;
+        }
+        .report-controls {
+          margin-bottom: 18px;
+        }
+        .period-picker {
+          padding: 9px 10px;
+        }
+        .period-picker select {
+          font-size: 11px;
+        }
+        .date-caption {
+          font-size: 10px;
+          max-width: 150px;
+          line-height: 1.7;
+        }
+        .filter-selects {
+          gap: 8px;
+        }
+        .filter-selects select {
+          font-size: 11px;
+          padding: 10px 20px 10px 9px;
+        }
+        .custom-dates {
+          flex-wrap: wrap;
+          padding: 12px;
+        }
+        .custom-dates input {
+          font-size: 11px;
+          max-width: 138px;
+        }
+        .custom-dates .button {
+          min-height: 38px;
+        }
+        .stats {
+          gap: 10px;
+          margin-bottom: 19px;
+        }
+        .stat-card {
+          padding: 13px;
+        }
+        .stat-top > span {
+          font-size: 10px;
+        }
+        .stat-icon {
+          height: 22px;
+          width: 22px;
+        }
+        .stat-icon svg {
+          height: 13px;
+          width: 13px;
+        }
+        .stat-card > strong {
+          font-size: 24px;
+          letter-spacing: -0.8px;
+          margin-top: 11px;
+        }
+        .stat-bottom small {
+          font-size: 8px;
+        }
+        .delta {
+          font-size: 8px;
+        }
+        .chart-grid {
+          gap: 17px;
+        }
+        .panel-heading {
+          padding: 18px 15px 12px;
+        }
+        .panel-heading h2 {
+          font-size: 15px;
+        }
+        .panel-heading p {
+          font-size: 10px;
+        }
+        .chart-key {
+          font-size: 8px;
+        }
+        .trend-chart {
+          padding: 0 9px;
+        }
+        .chart-inspector {
+          margin: 0 14px;
+          gap: 8px;
+          padding: 12px 0 17px;
+          flex-wrap: wrap;
+        }
+        .chart-inspector label {
+          font-size: 10px;
+        }
+        .chart-inspector input {
+          min-width: 100px;
+        }
+        .chart-inspector output {
+          font-size: 10px;
+          min-width: 110px;
+        }
+        .category-panel {
+          grid-template-columns: 140px 1fr;
+        }
+        .category-chart {
+          height: 160px;
+        }
+        .category-chart svg {
+          height: 132px;
+          width: 132px;
+        }
+        .category-legend {
+          padding: 0 15px 17px 4px;
+          gap: 13px;
+        }
+        .legend-row {
+          font-size: 9px;
+          gap: 6px;
+          flex-wrap: wrap;
+        }
+        .legend-row strong {
+          font-size: 9px;
+        }
+        .legend-row small {
+          display: none;
+        }
+        .insight-strip {
+          padding: 16px 15px;
+          gap: 12px;
+        }
+        .insight-strip strong {
+          font-size: 12px;
+          line-height: 1.7;
+        }
+        .insight-strip p {
+          font-size: 11px;
+          line-height: 1.8;
+        }
+        .insight-strip > .text-button {
+          font-size: 10px;
+          min-height: 35px;
+        }
+        .products-panel .panel-heading h2 {
+          font-size: 15px;
+          line-height: 1.6;
+        }
+        .products-panel .panel-heading p {
+          line-height: 1.8;
+        }
+        .table-toolbar {
+          padding: 3px 15px 16px;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 10px;
+        }
+        .search {
+          width: 100%;
+          max-width: none;
+          padding: 11px;
+        }
+        .search input {
+          font-size: 12px;
+        }
+        .sort-label {
+          justify-content: space-between;
+          font-size: 11px;
+        }
+        .sort-label select {
+          font-size: 11px;
+          min-height: 38px;
+          max-width: none;
+        }
+        th {
+          font-size: 9px;
+          padding: 12px 13px;
+        }
+        td {
+          font-size: 11px;
+          padding: 14px 13px;
+        }
+        th:first-child,
+        td:first-child {
+          padding-left: 15px;
+          max-width: 230px;
+        }
+        .product-name strong {
+          font-size: 11px;
+          max-width: 160px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .product-name small {
+          font-size: 10px;
+        }
+        .product-mark {
+          height: 32px;
+          width: 32px;
+        }
+        .table-footer {
+          font-size: 9px;
+          padding: 13px 15px;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+        .pagination button {
+          font-size: 10px;
+          min-height: 32px;
+        }
+        .pagination {
+          margin-left: auto;
+        }
+        .table-scroll {
+          position: relative;
+        }
+        footer {
+          font-size: 10px;
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 10px;
+          line-height: 1.8;
+        }
+        footer .text-button {
+          font-size: 10px;
+          min-height: 30px;
+        }
+        .toast {
+          left: 50%;
+          width: calc(100% - 30px);
+          bottom: 15px;
+          font-size: 12px;
+        }
+        dialog {
+          padding: 22px;
+          max-width: calc(100vw - 24px);
+        }
+        .dialog-heading h2 {
+          font-size: 23px;
+          line-height: 1.3;
+        }
+        .dialog-intro {
+          font-size: 12px;
+        }
+        .file-picker {
+          padding: 20px 12px;
+        }
+        .template-note p {
+          font-size: 11px;
+        }
+        .privacy-caption {
+          font-size: 10px;
+        }
+        .metric-definitions dd {
+          font-size: 12px;
+        }
+        .metric-definitions dt {
+          font-size: 13px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *:before,
+        *:after {
+          scroll-behavior: auto !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip" href="#overview">Skip to dashboard</a>
+    <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <symbol id="i-mountain" viewBox="0 0 24 24">
+        <path d="m2 20 8-15 5 9 3-5 5 11H2Z M7 11l3 2 2-3" />
+      </symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="7" height="7" rx="1.5" />
+        <rect x="14" y="3" width="7" height="7" rx="1.5" />
+        <rect x="3" y="14" width="7" height="7" rx="1.5" />
+        <rect x="14" y="14" width="7" height="7" rx="1.5" />
+      </symbol>
+      <symbol id="i-chart" viewBox="0 0 24 24">
+        <path d="M4 3v17h17 M8 14l4-5 4 3 5-7" />
+      </symbol>
+      <symbol id="i-box" viewBox="0 0 24 24">
+        <path d="m12 3 9 5-9 5-9-5 9-5Z M3 8v9l9 5 9-5V8 M12 13v9" />
+      </symbol>
+      <symbol id="i-upload" viewBox="0 0 24 24">
+        <path d="M12 16V3m-5 5 5-5 5 5 M4 15v6h16v-6" />
+      </symbol>
+      <symbol id="i-download" viewBox="0 0 24 24">
+        <path d="M12 3v13m-5-5 5 5 5-5 M4 17v4h16v-4" />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24">
+        <path d="M4 12h16m-6-6 6 6-6 6" />
+      </symbol>
+      <symbol id="i-chevron" viewBox="0 0 24 24">
+        <path d="m9 5 7 7-7 7" />
+      </symbol>
+      <symbol id="i-search" viewBox="0 0 24 24">
+        <circle cx="10.5" cy="10.5" r="6.5" />
+        <path d="m16 16 5 5" />
+      </symbol>
+      <symbol id="i-calendar" viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="16" rx="2" />
+        <path d="M7 3v5 M17 3v5 M3 11h18" />
+      </symbol>
+      <symbol id="i-close" viewBox="0 0 24 24">
+        <path d="m6 6 12 12 M18 6 6 18" />
+      </symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24">
+        <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z m-4 9 3 3 5-5" />
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24">
+        <path d="m5 12 4 4L19 6" />
+      </symbol>
+      <symbol id="i-money" viewBox="0 0 24 24">
+        <path d="M12 3v18 M17 7c-1-4-10-3-10 1 0 5 10 3 10 8 0 4-9 5-11 0" />
+      </symbol>
+      <symbol id="i-return" viewBox="0 0 24 24">
+        <path d="M4 10h11a6 6 0 0 1 0 12 M4 10l5-5 M4 10l5 5" />
+      </symbol>
+      <symbol id="i-pack" viewBox="0 0 24 24">
+        <path
+          d="M7 7V5a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v2 M5 11a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v10H5V11Z M8 14h8v5H8v-5Z M9 10h6"
+        />
+      </symbol>
+      <symbol id="i-tent" viewBox="0 0 24 24">
+        <path d="m3 21 9-18 9 18H3Z M12 9v12 M12 14l5 7 M5 21H1 M23 21h-4" />
+      </symbol>
+      <symbol id="i-flask" viewBox="0 0 24 24">
+        <path d="M9 2h6v4l3 4v12H6V10l3-4V2Z M9 6h6 M6 12h12 M10 16h4" />
+      </symbol>
+      <symbol id="i-lantern" viewBox="0 0 24 24">
+        <path
+          d="M9 5V4a3 3 0 0 1 6 0v1 M7 7h10l2 13H5L7 7Z M4 22h16 M8 7l1 13 M16 7l-1 13 M8 4h8"
+        />
+      </symbol>
+      <symbol id="i-trail" viewBox="0 0 24 24">
+        <path d="m5 21 4-18 M15 21l3-18 M3 18h5 M13 18h5 M8 5h4 M17 5h4" />
+      </symbol>
+      <symbol id="i-code" viewBox="0 0 24 24">
+        <path d="m7 7-5 5 5 5 M17 7l5 5-5 5 M14 4l-4 16" />
+      </symbol>
+    </svg>
+    <aside class="sidebar" aria-label="Workspace navigation">
+      <a class="brand" href="#overview"
+        ><span class="brand-symbol"
+          ><svg><use href="#i-mountain" /></svg></span
+        ><span
+          >summit &amp; pine<span class="brand-sub">RETAIL INSIGHTS</span></span
+        ></a
+      >
+      <p class="nav-label">YOUR WORKSPACE</p>
+      <nav>
+        <a class="nav-item active" href="#overview" aria-current="page"
+          ><svg><use href="#i-grid" /></svg>Sales overview</a
+        ><a class="nav-item" href="#products"
+          ><svg><use href="#i-box" /></svg>Product performance</a
+        ><button class="nav-item" data-dialog="import">
+          <svg><use href="#i-upload" /></svg>Import your data</button
+        ><button class="nav-item" data-dialog="definitions">
+          <svg><use href="#i-chart" /></svg>How we calculate
+        </button>
+      </nav>
+      <div class="sidebar-note">
+        <span class="privacy-icon"
+          ><svg><use href="#i-shield" /></svg></span
+        ><strong>Your data stays with you.</strong>
+        <p>Reports run in your browser.<br />No upload. No account.</p>
+        <span class="privacy-tag"><span></span>Private by design</span>
+      </div>
+      <a
+        class="source-link"
+        href="https://github.com/nnacrp0815/ecommerce-insights-dashboard"
+        target="_blank"
+        rel="noreferrer"
+        ><svg><use href="#i-code" /></svg>Explore this project<svg>
+          <use href="#i-arrow" /></svg
+      ></a>
+    </aside>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="breadcrumbs">
+          Workspace<span>/</span><strong>Sales overview</strong>
+        </div>
+        <div class="topbar-right">
+          <span class="source-badge" id="source-badge"
+            ><span></span>Fictional sample data</span
+          ><button
+            class="icon-button"
+            data-dialog="definitions"
+            aria-label="About these metrics"
+          >
+            ?
+          </button>
+        </div>
+      </header>
+      <main id="overview">
+        <section class="page-heading">
+          <div>
+            <p class="eyebrow">THE BIG PICTURE. THE SMALL DETAILS.</p>
+            <h1>Know what’s moving your store.</h1>
+            <p class="page-description">
+              Sales, refunds and the products behind the numbers. All in one
+              clear view.
+            </p>
+          </div>
+          <div class="heading-actions">
+            <button class="button secondary" data-dialog="import">
+              <svg><use href="#i-upload" /></svg>Import CSV</button
+            ><button class="button primary" id="export">
+              <svg><use href="#i-download" /></svg>Export report
+            </button>
+          </div>
+        </section>
+        <section class="demo-note" aria-label="Data source">
+          <div class="note-mark">
+            <svg><use href="#i-mountain" /></svg>
+          </div>
+          <div>
+            <strong id="source-title"
+              >A little insight for your next adventure.</strong
+            >
+            <p id="source-description">
+              Explore a fictional outdoor retailer: daypacks, tents, trail
+              accessories and camp essentials.
+            </p>
+          </div>
+          <button class="text-button" id="restore">
+            Restore sample data<svg><use href="#i-arrow" /></svg>
+          </button>
+        </section>
+        <section class="report-controls" aria-label="Report filters">
+          <div class="period-picker">
+            <svg><use href="#i-calendar" /></svg
+            ><label class="sr-only" for="period">Reporting period</label
+            ><select id="period">
+              <option value="7">Last 7 days</option>
+              <option value="30" selected>Last 30 days</option>
+              <option value="90">Last 90 days</option>
+              <option value="custom">Custom dates</option>
+            </select>
+          </div>
+          <span class="date-caption" id="date-caption"></span>
+          <div class="filter-selects">
+            <label
+              ><span class="sr-only">Sales channel</span
+              ><select id="channel">
+                <option value="all">All channels</option>
+              </select></label
+            ><label
+              ><span class="sr-only">Product category</span
+              ><select id="category">
+                <option value="all">All categories</option>
+              </select></label
+            >
+          </div>
+        </section>
+        <form id="custom-dates" class="custom-dates" hidden>
+          <label>From<input id="start" type="date" required /></label
+          ><label>To<input id="end" type="date" required /></label
+          ><button class="button secondary" type="submit">Apply dates</button>
+        </form>
+        <p class="inline-error" id="report-error" role="alert" hidden></p>
+        <p class="coverage-note" id="coverage-note" hidden></p>
+        <section class="stats" id="stats" aria-label="Sales summary"></section>
+        <div class="chart-grid">
+          <section class="panel trend-panel" aria-labelledby="trend-title">
+            <div class="panel-heading">
+              <div>
+                <h2 id="trend-title">Sales over time</h2>
+                <p>Net product sales, by order date</p>
+              </div>
+              <span class="chart-key"><span></span>Net sales</span>
+            </div>
+            <div id="trend-chart" class="trend-chart"></div>
+            <div class="chart-inspector">
+              <label for="chart-cursor">Inspect a day</label
+              ><input
+                id="chart-cursor"
+                type="range"
+                min="0"
+                max="29"
+                value="29"
+              /><output id="day-value" for="chart-cursor"></output>
+            </div>
+          </section>
+          <section
+            class="panel category-panel"
+            aria-labelledby="category-title"
+          >
+            <div class="panel-heading">
+              <div>
+                <h2 id="category-title">Where sales come from</h2>
+                <p>Net sales by product category</p>
+              </div>
+            </div>
+            <div id="category-chart" class="category-chart"></div>
+            <div id="category-legend" class="category-legend"></div>
+          </section>
+        </div>
+        <section class="insight-strip" aria-label="Report insight">
+          <span class="insight-icon"
+            ><svg><use href="#i-chart" /></svg
+          ></span>
+          <div>
+            <strong id="insight-title"></strong>
+            <p id="insight-copy"></p>
+          </div>
+          <button class="text-button" data-dialog="definitions">
+            Understand the numbers<svg><use href="#i-arrow" /></svg>
+          </button>
+        </section>
+        <section
+          class="panel products-panel"
+          id="products"
+          aria-labelledby="products-title"
+        >
+          <div class="panel-heading">
+            <div>
+              <h2 id="products-title">
+                The products behind your sales
+                <span class="count-pill" id="product-count">8</span>
+              </h2>
+              <p>
+                See what’s selling, what’s being refunded, and each product’s
+                contribution.
+              </p>
+            </div>
+            <span class="table-context" id="table-context"></span>
+          </div>
+          <div class="table-toolbar">
+            <label class="search"
+              ><svg><use href="#i-search" /></svg
+              ><span class="sr-only">Search product table</span
+              ><input
+                id="product-search"
+                type="search"
+                placeholder="Search products or SKU…" /></label
+            ><label class="sort-label"
+              ><span>Sort by</span
+              ><select id="sort" aria-label="Sort products">
+                <option value="net">Net sales</option>
+                <option value="units">Units ordered</option>
+                <option value="refunds">Refunded sales</option>
+              </select></label
+            >
+          </div>
+          <p class="table-scroll-hint">
+            Scroll table for sales &amp; refunds →
+          </p>
+          <div
+            class="table-scroll"
+            tabindex="0"
+            role="region"
+            aria-label="Product performance table, scroll horizontally for all columns"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">PRODUCT</th>
+                  <th scope="col">UNITS</th>
+                  <th scope="col">ORDERS</th>
+                  <th scope="col">NET SALES</th>
+                  <th scope="col">REFUNDS</th>
+                  <th scope="col">SHARE</th>
+                </tr>
+              </thead>
+              <tbody id="product-rows"></tbody>
+            </table>
+          </div>
+          <div class="table-footer">
+            <span id="table-summary"></span>
+            <div class="pagination">
+              <button id="previous-page" aria-label="Previous product page">
+                Previous</button
+              ><button id="next-page" aria-label="Next product page">
+                Next
+              </button>
+            </div>
+            <span class="table-footnote"
+              >Paid orders only · Shipping &amp; tax excluded</span
+            >
+          </div>
+        </section>
+        <footer>
+          <span
+            ><svg><use href="#i-shield" /></svg>Calculated locally. Imported
+            files are never uploaded.</span
+          ><button class="text-button" data-dialog="definitions">
+            Metric definitions &amp; assumptions<svg>
+              <use href="#i-arrow" />
+            </svg>
+          </button>
+        </footer>
+        <p id="toast" class="toast" role="status" aria-live="polite" hidden></p>
+        <noscript
+          ><p class="inline-error">
+            Enable JavaScript to use this dashboard.
+          </p></noscript
+        >
+      </main>
+    </div>
+    <dialog id="import-dialog" aria-labelledby="import-title">
+      <div class="dialog-heading">
+        <div>
+          <p class="eyebrow">FROM ROWS TO A CLEARER PICTURE</p>
+          <h2 id="import-title">Bring your own numbers.</h2>
+        </div>
+        <button class="icon-button close-dialog" aria-label="Close import">
+          <svg><use href="#i-close" /></svg>
+        </button>
+      </div>
+      <p class="dialog-intro">
+        Import a CSV of order lines. We’ll validate the whole file before
+        replacing the current report.
+      </p>
+      <label class="file-picker" for="csv-file"
+        ><span class="upload-mark"
+          ><svg><use href="#i-upload" /></svg></span
+        ><strong>Choose an order-line CSV</strong
+        ><span>Up to 5 MB · 50,000 lines · One currency</span
+        ><input id="csv-file" type="file" accept=".csv,text/csv"
+      /></label>
+      <p id="import-error" class="inline-error" role="alert" hidden></p>
+      <div class="template-note">
+        <strong>Start with the right format.</strong>
+        <p>
+          One row per order line, with identifiers, date, product, channel,
+          quantity, amounts and currency. This uses a documented CSV contract,
+          not an unmodified Shopify export.
+        </p>
+        <button class="button secondary" id="download-template">
+          <svg><use href="#i-download" /></svg>Download sample CSV
+        </button>
+      </div>
+      <p class="privacy-caption">
+        <svg><use href="#i-shield" /></svg>The file stays in memory on this
+        device. Reloading restores the sample data.
+      </p>
+    </dialog>
+    <dialog id="definitions-dialog" aria-labelledby="definitions-title">
+      <div class="dialog-heading">
+        <div>
+          <p class="eyebrow">NO MYSTERY METRICS</p>
+          <h2 id="definitions-title">Know what the numbers mean.</h2>
+        </div>
+        <button
+          class="icon-button close-dialog"
+          aria-label="Close metric definitions"
+        >
+          <svg><use href="#i-close" /></svg>
+        </button>
+      </div>
+      <dl class="metric-definitions">
+        <dt>Net product sales</dt>
+        <dd>
+          Quantity × unit price, minus line discounts and refunded sales.
+          Shipping, taxes, fees and product costs are excluded. This is a sales
+          report, not a profit or accounting statement.
+        </dd>
+        <dt>Paid orders &amp; average order value</dt>
+        <dd>
+          Distinct paid orders, including fully refunded orders. Average order
+          value is net product sales divided by that count. With a category
+          filter, both measures use only matching lines and orders containing
+          them.
+        </dd>
+        <dt>Refunds</dt>
+        <dd>
+          Refund amounts are attributed to the original order date. The file
+          does not include a refund transaction date, so this is not a cash-flow
+          report. Refund percentage uses sales after discounts, before refunds.
+        </dd>
+        <dt>Comparisons</dt>
+        <dd>
+          The immediately preceding period of equal length, using the same
+          filters. Changes are unavailable when the earlier period falls outside
+          the file’s observed date coverage or its baseline is zero.
+        </dd>
+        <dt>Coverage &amp; missing orders</dt>
+        <dd>
+          Reports use only the rows supplied. The dashboard cannot detect
+          omitted orders. Days within the date range without matching rows
+          appear as zero sales. An import’s observed first and last dates do not
+          prove that it is complete.
+        </dd>
+        <dt>Product table</dt>
+        <dd>
+          Units are quantities ordered, not units retained after returns. Orders
+          containing a product are distinct counts and should not be added
+          across products. Share is each product’s contribution to the current
+          filtered net sales.
+        </dd>
+        <dt>Private by default</dt>
+        <dd>
+          No analytics, external fonts, account, upload endpoint or browser
+          storage. Import data stays in page memory and is cleared on reload.
+          Keep confidential CSV files out of public repositories.
+        </dd>
+      </dl>
+    </dialog>
+    <script>
+      // Generated from the shared TypeScript modules by npm run build.
+      window.RetailInsights = (() => {
+        const DAY = 86400000;
+        function dayNumber(value) {
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(value))
+            throw new Error("Use a date in YYYY-MM-DD format.");
+          const time = Date.parse(value + "T00:00:00Z");
+          if (
+            !Number.isFinite(time) ||
+            new Date(time).toISOString().slice(0, 10) !== value
+          )
+            throw new Error("That calendar date is invalid.");
+          return time / DAY;
+        }
+        function shiftDate(value, days) {
+          if (!Number.isSafeInteger(days))
+            throw new Error("Date offsets must be whole days.");
+          return new Date((dayNumber(value) + days) * DAY)
+            .toISOString()
+            .slice(0, 10);
+        }
+        function cents(value) {
+          if (!/^\d{1,9}(\.\d{1,2})?$/.test(value))
+            throw new Error(
+              "Money must be a non-negative decimal with at most two decimal places, without a currency symbol.",
+            );
+          const [whole, part = ""] = value.split(".");
+          return Number(whole) * 100 + Number(part.padEnd(2, "0"));
+        }
+        function decimal(value) {
+          if (!Number.isSafeInteger(value))
+            throw new Error("Money must be stored as integer cents.");
+          const sign = value < 0 ? "-" : "";
+          const abs = Math.abs(value);
+          return `${sign}${Math.floor(abs / 100)}.${String(abs % 100).padStart(2, "0")}`;
+        }
+        function validateLines(lines) {
+          if (!lines.length || lines.length > 50000)
+            throw new Error(
+              "Use a file with between 1 and 50,000 order lines.",
+            );
+          const ids = new Set();
+          const orders = new Map();
+          const currencies = new Set();
+          const products = new Map();
+          let totalGross = 0;
+          for (const [index, line] of lines.entries()) {
+            const row = `Row ${index + 2}: `;
+            const fail = (message) => {
+              throw new Error(row + message);
+            };
+            for (const field of [
+              "lineId",
+              "orderId",
+              "sku",
+              "product",
+              "category",
+              "channel",
+            ])
+              if (
+                typeof line[field] !== "string" ||
+                !line[field].trim() ||
+                line[field].length > 200 ||
+                /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(line[field])
+              )
+                fail(`${field} must contain 1–200 characters.`);
+            try {
+              dayNumber(line.date);
+            } catch {
+              fail("date must be a valid YYYY-MM-DD calendar date.");
+            }
+            if (!["paid", "pending", "cancelled"].includes(line.status))
+              fail("status must be paid, pending or cancelled.");
+            if (
+              !Number.isSafeInteger(line.quantity) ||
+              line.quantity < 1 ||
+              line.quantity > 10000
+            )
+              fail("quantity must be a whole number from 1 to 10,000.");
+            for (const field of ["unitPrice", "discount", "refund"])
+              if (
+                !Number.isSafeInteger(line[field]) ||
+                line[field] < 0 ||
+                line[field] > 99999999999
+              )
+                fail(`${field} must be a valid non-negative amount.`);
+            const gross = line.quantity * line.unitPrice;
+            if (!Number.isSafeInteger(gross))
+              fail("The line amount is too large.");
+            totalGross += gross;
+            if (!Number.isSafeInteger(totalGross))
+              fail(
+                "The dataset total exceeds the safe integer reporting limit.",
+              );
+            if (line.discount > gross)
+              fail("The line discount exceeds its gross sales.");
+            if (line.refund > gross - line.discount)
+              fail("The line refund exceeds sales after discounts.");
+            if (line.status !== "paid" && line.refund > 0)
+              fail("Only paid order lines can carry a refund.");
+            if (!/^[A-Z]{3}$/.test(line.currency))
+              fail("currency must be a three-letter uppercase code.");
+            if (ids.has(line.lineId))
+              fail("A line ID is duplicated. Nothing was imported.");
+            ids.add(line.lineId);
+            currencies.add(line.currency);
+            const context = JSON.stringify([
+              line.date,
+              line.channel,
+              line.status,
+              line.currency,
+            ]);
+            if (
+              orders.has(line.orderId) &&
+              orders.get(line.orderId) !== context
+            )
+              fail(
+                "Lines in the same order disagree on date, channel, status or currency.",
+              );
+            orders.set(line.orderId, context);
+            const productContext = JSON.stringify([
+              line.product,
+              line.category,
+            ]);
+            if (
+              products.has(line.sku) &&
+              products.get(line.sku) !== productContext
+            )
+              fail("A SKU has conflicting product names or categories.");
+            products.set(line.sku, productContext);
+          }
+          if (currencies.size !== 1)
+            throw new Error(
+              "Import one currency at a time. This dashboard does not convert currencies.",
+            );
+          if (
+            new Intl.NumberFormat("en", {
+              style: "currency",
+              currency: lines[0].currency,
+            }).resolvedOptions().maximumFractionDigits !== 2
+          )
+            throw new Error(
+              "Use a currency with two decimal minor units, such as AUD, USD or EUR.",
+            );
+          if (
+            new Set(lines.map((l) => l.category)).size > 100 ||
+            new Set(lines.map((l) => l.channel)).size > 50
+          )
+            throw new Error(
+              "Use at most 100 categories and 50 channels per file.",
+            );
+        }
+        function datasetFromLines(
+          lines,
+          source = "import",
+          ignoredColumns = [],
+        ) {
+          validateLines(lines);
+          const dates = lines.map((l) => l.date).sort();
+          return {
+            lines,
+            source,
+            coverage: { start: dates[0], end: dates[dates.length - 1] },
+            ignoredColumns,
+          };
+        }
+
+        const HEADERS = [
+          "line_id",
+          "order_id",
+          "date",
+          "sku",
+          "product",
+          "category",
+          "channel",
+          "status",
+          "quantity",
+          "unit_price",
+          "discount",
+          "refund",
+          "currency",
+        ];
+        /** Strict quoted CSV parser supporting BOM, embedded commas/newlines and CRLF. */
+        function parseCSV(text) {
+          if (new TextEncoder().encode(text).byteLength > 5 * 1024 * 1024)
+            throw new Error(
+              "The CSV limit is 5 MB. Split larger files before importing.",
+            );
+          if (text.startsWith("\ufeff")) text = text.slice(1);
+          const rows = [];
+          let row = [];
+          let field = "";
+          let quoted = false;
+          let closed = false;
+          for (let i = 0; i < text.length; i++) {
+            const ch = text[i];
+            if (quoted) {
+              if (ch === '"') {
+                if (text[i + 1] === '"') {
+                  field += '"';
+                  i++;
+                } else {
+                  quoted = false;
+                  closed = true;
+                }
+              } else field += ch;
+              continue;
+            }
+            if (closed && ![",", "\r", "\n"].includes(ch))
+              throw new Error("Unexpected text after a closing quote.");
+            if (ch === '"') {
+              if (field || closed)
+                throw new Error("A quote appears inside an unquoted field.");
+              quoted = true;
+            } else if (ch === ",") {
+              row.push(field);
+              field = "";
+              closed = false;
+            } else if (ch === "\n" || ch === "\r") {
+              if (ch === "\r" && text[i + 1] === "\n") i++;
+              row.push(field);
+              rows.push(row);
+              row = [];
+              field = "";
+              closed = false;
+              if (rows.length > 50001)
+                throw new Error(
+                  "The file contains more than 50,000 order lines.",
+                );
+            } else field += ch;
+          }
+          if (quoted) throw new Error("A quoted field was not closed.");
+          if (field || row.length || closed) {
+            row.push(field);
+            rows.push(row);
+          }
+          while (rows.length && rows[rows.length - 1].every((v) => !v.trim()))
+            rows.pop();
+          return rows;
+        }
+        function importCSV(text) {
+          const rows = parseCSV(text);
+          const header = rows.shift()?.map((h) => h.trim().toLowerCase());
+          if (!header?.length)
+            throw new Error(
+              "The file is empty. Use the sample CSV as a template.",
+            );
+          if (new Set(header).size !== header.length)
+            throw new Error("Column headings must be unique.");
+          const missing = HEADERS.filter((h) => !header.includes(h));
+          if (missing.length)
+            throw new Error(
+              `Missing columns: ${missing.join(", ")}. Download the sample template.`,
+            );
+          const indexes = new Map(header.map((name, index) => [name, index]));
+          const lines = rows.map((fields, index) => {
+            if (fields.length !== header.length)
+              throw new Error(
+                `Row ${index + 2}: column count does not match the header.`,
+              );
+            const get = (name) => fields[indexes.get(name)].trim();
+            const quantity = get("quantity");
+            if (!/^\d+$/.test(quantity))
+              throw new Error(
+                `Row ${index + 2}: quantity must be a positive whole number.`,
+              );
+            const amount = (name) => {
+              try {
+                return cents(get(name));
+              } catch {
+                throw new Error(
+                  `Row ${index + 2}: ${name} must be a decimal amount with at most two decimal places.`,
+                );
+              }
+            };
+            return {
+              lineId: get("line_id"),
+              orderId: get("order_id"),
+              date: get("date"),
+              sku: get("sku"),
+              product: get("product"),
+              category: get("category"),
+              channel: get("channel"),
+              status: get("status"),
+              quantity: Number(quantity),
+              unitPrice: amount("unit_price"),
+              discount: amount("discount"),
+              refund: amount("refund"),
+              currency: get("currency"),
+            };
+          });
+          return datasetFromLines(
+            lines,
+            "import",
+            header.filter((h) => !HEADERS.includes(h)),
+          );
+        }
+        /** Spreadsheet formula prefixes are escaped on string exports, before RFC-style quoting. */
+        function csvCell(value) {
+          let text = String(value);
+          if (
+            typeof value === "string" &&
+            /^[\s\u0000-\u001f]*[=+\-@]/.test(text)
+          )
+            text = "'" + text;
+          return /[",\r\n]/.test(text)
+            ? '"' + text.replaceAll('"', '""') + '"'
+            : text;
+        }
+        function writeCSV(rows) {
+          return (
+            rows.map((row) => row.map(csvCell).join(",")).join("\r\n") + "\r\n"
+          );
+        }
+        function exportOrders(lines) {
+          return writeCSV([
+            [...HEADERS],
+            ...lines.map((l) => [
+              l.lineId,
+              l.orderId,
+              l.date,
+              l.sku,
+              l.product,
+              l.category,
+              l.channel,
+              l.status,
+              l.quantity,
+              decimal(l.unitPrice),
+              decimal(l.discount),
+              decimal(l.refund),
+              l.currency,
+            ]),
+          ]);
+        }
+
+        function summarize(lines) {
+          const ids = new Set(lines.map((l) => l.orderId));
+          let gross = 0,
+            discounts = 0,
+            refunds = 0,
+            units = 0;
+          for (const l of lines) {
+            gross += l.quantity * l.unitPrice;
+            discounts += l.discount;
+            refunds += l.refund;
+            units += l.quantity;
+          }
+          const net = gross - discounts - refunds;
+          if (![gross, discounts, refunds, net].every(Number.isSafeInteger))
+            throw new Error("The report is too large to calculate safely.");
+          return {
+            gross,
+            discounts,
+            refunds,
+            net,
+            orders: ids.size,
+            units,
+            aov: ids.size ? net / ids.size : null,
+            refundRate:
+              gross - discounts > 0 ? refunds / (gross - discounts) : null,
+          };
+        }
+        function percentChange(current, previous) {
+          return previous === null || previous === 0
+            ? null
+            : (current - previous) / Math.abs(previous);
+        }
+        function defaultSelection(dataset, days = 30) {
+          return {
+            start: shiftDate(dataset.coverage.end, -days + 1),
+            end: dataset.coverage.end,
+            channel: "all",
+            category: "all",
+          };
+        }
+        function buildReport(dataset, selection) {
+          const start = dayNumber(selection.start),
+            end = dayNumber(selection.end),
+            length = end - start + 1;
+          if (length < 1 || length > 366)
+            throw new Error("Choose a date range between 1 and 366 days.");
+          const previousStart = shiftDate(selection.start, -length),
+            previousEnd = shiftDate(selection.start, -1);
+          const available =
+            previousStart >= dataset.coverage.start &&
+            previousEnd <= dataset.coverage.end;
+          const matching = dataset.lines.filter(
+            (l) =>
+              (selection.channel === "all" ||
+                l.channel === selection.channel) &&
+              (selection.category === "all" ||
+                l.category === selection.category),
+          );
+          const active = matching.filter((l) => l.status === "paid");
+          const current = active.filter(
+            (l) => l.date >= selection.start && l.date <= selection.end,
+          );
+          const previous = active.filter(
+            (l) => l.date >= previousStart && l.date <= previousEnd,
+          );
+          const productGroups = new Map();
+          const categoryGroups = new Map();
+          const dailyMap = new Map();
+          for (const line of current) {
+            const product = productGroups.get(line.sku) ?? [];
+            product.push(line);
+            productGroups.set(line.sku, product);
+            const category = categoryGroups.get(line.category) ?? [];
+            category.push(line);
+            categoryGroups.set(line.category, category);
+            const day = dailyMap.get(line.date) ?? [];
+            day.push(line);
+            dailyMap.set(line.date, day);
+          }
+          const totals = summarize(current);
+          return {
+            selection,
+            currency: dataset.lines[0].currency,
+            current: totals,
+            previous: available ? summarize(previous) : null,
+            comparison: { start: previousStart, end: previousEnd, available },
+            daily: Array.from({ length }, (_, i) => {
+              const date = shiftDate(selection.start, i),
+                t = summarize(dailyMap.get(date) ?? []);
+              return { date, net: t.net, orders: t.orders };
+            }),
+            products: [...productGroups]
+              .map(([sku, lines]) => {
+                const t = summarize(lines);
+                return {
+                  sku,
+                  name: lines[0].product,
+                  category: lines[0].category,
+                  units: t.units,
+                  orders: t.orders,
+                  net: t.net,
+                  refunds: t.refunds,
+                  share: totals.net > 0 ? t.net / totals.net : null,
+                };
+              })
+              .sort((a, b) => b.net - a.net || a.sku.localeCompare(b.sku)),
+            categories: [...categoryGroups]
+              .map(([name, lines]) => {
+                const t = summarize(lines);
+                return { name, net: t.net, orders: t.orders };
+              })
+              .sort((a, b) => b.net - a.net || a.name.localeCompare(b.name)),
+            excludedLines: matching.filter(
+              (l) =>
+                l.status !== "paid" &&
+                l.date >= selection.start &&
+                l.date <= selection.end,
+            ).length,
+          };
+        }
+        function exportReport(report, products = report.products) {
+          return writeCSV([
+            [
+              "period_start",
+              "period_end",
+              "channel_filter",
+              "category_filter",
+              "currency",
+              "sku",
+              "product",
+              "category",
+              "units_ordered",
+              "orders_containing_product",
+              "net_product_sales",
+              "refunded_sales",
+            ],
+            ...products.map((p) => [
+              report.selection.start,
+              report.selection.end,
+              report.selection.channel,
+              report.selection.category,
+              report.currency,
+              p.sku,
+              p.name,
+              p.category,
+              p.units,
+              p.orders,
+              decimal(p.net),
+              decimal(p.refunds),
+            ]),
+          ]);
+        }
+
+        const CATALOG = [
+          {
+            sku: "PACK-28",
+            name: "Ridge 28L Daypack",
+            category: "Packs & bags",
+            price: 12900,
+            icon: "pack",
+          },
+          {
+            sku: "TENT-2P",
+            name: "Alpine 2P Tent",
+            category: "Shelter",
+            price: 27900,
+            icon: "tent",
+          },
+          {
+            sku: "SOCK-MR",
+            name: "Merino Trail Socks",
+            category: "Trail accessories",
+            price: 2400,
+            icon: "trail",
+          },
+          {
+            sku: "FLASK-50",
+            name: "Insulated Trail Flask",
+            category: "Camp essentials",
+            price: 3900,
+            icon: "flask",
+          },
+          {
+            sku: "POLE-AL",
+            name: "Aluminium Trekking Poles",
+            category: "Trail accessories",
+            price: 8900,
+            icon: "trail",
+          },
+          {
+            sku: "LIGHT-01",
+            name: "Rechargeable Camp Lantern",
+            category: "Camp essentials",
+            price: 4900,
+            icon: "lantern",
+          },
+          {
+            sku: "COVER-28",
+            name: "Daypack Rain Cover",
+            category: "Packs & bags",
+            price: 1900,
+            icon: "pack",
+          },
+          {
+            sku: "GAITER-01",
+            name: "All-weather Trail Gaiters",
+            category: "Trail accessories",
+            price: 4500,
+            icon: "trail",
+          },
+        ];
+        function createSampleDataset() {
+          let seed = 87321;
+          const random = () => {
+            seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+            return seed / 4294967296;
+          };
+          const lines = [];
+          let order = 2000;
+          let line = 0;
+          for (let day = 0; day < 90; day++) {
+            const date = shiftDate("2026-07-31", day);
+            const orders = 3 + Math.floor(random() * 3) + (day > 60 ? 2 : 0);
+            for (let n = 0; n < orders; n++) {
+              order++;
+              const channel = ["Online store", "Marketplace", "Retail shop"][
+                Math.floor(random() * 3)
+              ];
+              const status =
+                random() < 0.025
+                  ? "cancelled"
+                  : random() < 0.025
+                    ? "pending"
+                    : "paid";
+              const basket = random() < 0.42 ? 2 : 1;
+              for (let item = 0; item < basket; item++) {
+                const product = CATALOG[Math.floor(random() * CATALOG.length)];
+                const quantity = random() < 0.18 ? 2 : 1;
+                const gross = product.price * quantity;
+                const discount = random() < 0.16 ? Math.floor(gross / 10) : 0;
+                const refund =
+                  status === "paid" && random() < 0.045
+                    ? Math.floor(
+                        (gross - discount) * (random() < 0.6 ? 1 : 0.5),
+                      )
+                    : 0;
+                lines.push({
+                  lineId: `L-${++line}`,
+                  orderId: `SP-${order}`,
+                  date,
+                  sku: product.sku,
+                  product: product.name,
+                  category: product.category,
+                  channel,
+                  status,
+                  quantity,
+                  unitPrice: product.price,
+                  discount,
+                  refund,
+                  currency: "AUD",
+                });
+              }
+            }
+          }
+          return datasetFromLines(lines, "sample");
+        }
+
+        return {
+          importCSV,
+          exportOrders,
+          buildReport,
+          defaultSelection,
+          percentChange,
+          exportReport,
+          createSampleDataset,
+          CATALOG,
+          shiftDate,
+          dayNumber,
+        };
+      })();
+
+      const api = window.RetailInsights;
+      const $ = (selector) => document.querySelector(selector);
+      const make = (tag, text, className) => {
+        const node = document.createElement(tag);
+        if (text !== undefined) node.textContent = text;
+        if (className) node.className = className;
+        return node;
+      };
+      const svgNode = (tag, attrs = {}, text) => {
+        const node = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          tag,
+        );
+        for (const [key, value] of Object.entries(attrs))
+          node.setAttribute(key, String(value));
+        if (text !== undefined) node.textContent = text;
+        return node;
+      };
+      const icon = (name) => {
+        const svg = svgNode("svg", { "aria-hidden": "true" });
+        svg.append(svgNode("use", { href: `#i-${name}` }));
+        return svg;
+      };
+      const colors = ["#4d876c", "#a6b791", "#d0af81", "#9eafb7", "#c9c4a7"];
+      let dataset = api.createSampleDataset();
+      let selection = api.defaultSelection(dataset);
+      let report;
+      let sourceName = "";
+      let page = 0;
+      let importGeneration = 0;
+      let toastTimer;
+      let chartGeometry;
+      const money = (amount, options = {}) =>
+        new Intl.NumberFormat("en-AU", {
+          style: "currency",
+          currency: report?.currency || dataset.lines[0].currency,
+          ...options,
+        }).format(amount / 100);
+      const count = (value) => new Intl.NumberFormat("en-AU").format(value);
+      const percent = (value, digits = 1) =>
+        new Intl.NumberFormat("en-AU", {
+          style: "percent",
+          maximumFractionDigits: digits,
+        }).format(value);
+      const shortDate = (value) =>
+        new Intl.DateTimeFormat("en-AU", {
+          day: "numeric",
+          month: "short",
+          timeZone: "UTC",
+        }).format(new Date(value + "T00:00:00Z"));
+      function toast(text) {
+        clearTimeout(toastTimer);
+        $("#toast").textContent = text;
+        $("#toast").hidden = false;
+        toastTimer = setTimeout(() => {
+          $("#toast").hidden = true;
+        }, 5500);
+      }
+      function setupFilters() {
+        for (const [id, key, label] of [
+          ["channel", "channel", "All channels"],
+          ["category", "category", "All categories"],
+        ]) {
+          const select = $(`#${id}`);
+          select.replaceChildren(new Option(label, "all"));
+          for (const value of [
+            ...new Set(dataset.lines.map((l) => l[key])),
+          ].sort())
+            select.append(new Option(value, value));
+          select.value = "all";
+        }
+        $("#start").value = selection.start;
+        $("#end").value = selection.end;
+      }
+      function deltaBadge(current, previous, lowerIsBetter = false) {
+        const change = api.percentChange(current, previous);
+        if (change === null)
+          return make(
+            "span",
+            previous === 0 ? "Zero baseline" : "No comparison",
+            "delta neutral",
+          );
+        const good = lowerIsBetter ? change <= 0 : change >= 0;
+        return make(
+          "span",
+          `${change > 0 ? "↗" : change < 0 ? "↘" : "→"} ${percent(Math.abs(change))}`,
+          `delta${good ? "" : " negative"}`,
+        );
+      }
+      function renderStats() {
+        const target = $("#stats");
+        target.replaceChildren();
+        const current = report.current,
+          previous = report.previous;
+        const stats = [
+          {
+            label: "Net product sales",
+            value: money(current.net),
+            raw: current.net,
+            prior: previous?.net ?? null,
+            icon: "money",
+          },
+          {
+            label: "Paid orders",
+            value: count(current.orders),
+            raw: current.orders,
+            prior: previous?.orders ?? null,
+            icon: "box",
+          },
+          {
+            label: "Average order value",
+            value: current.aov === null ? "—" : money(current.aov),
+            raw: current.aov,
+            prior: previous?.aov ?? null,
+            icon: "chart",
+          },
+          {
+            label: "Refunded sales",
+            value: money(current.refunds),
+            raw: current.refunds,
+            prior: previous?.refunds ?? null,
+            icon: "return",
+            lower: true,
+          },
+        ];
+        for (const stat of stats) {
+          const card = make("div", undefined, "stat-card"),
+            top = make("div", undefined, "stat-top"),
+            mark = make("span", undefined, "stat-icon");
+          mark.append(icon(stat.icon));
+          top.append(make("span", stat.label), mark);
+          const bottom = make("div", undefined, "stat-bottom");
+          bottom.append(
+            deltaBadge(
+              stat.raw ?? 0,
+              stat.raw === null ? null : stat.prior,
+              stat.lower,
+            ),
+            make(
+              "small",
+              report.previous
+                ? "vs previous period"
+                : "Earlier period unavailable",
+            ),
+          );
+          card.append(top, make("strong", stat.value), bottom);
+          target.append(card);
+        }
+      }
+      function drawTrend() {
+        const container = $("#trend-chart");
+        container.replaceChildren();
+        const width = Math.max(
+            320,
+            Math.floor(container.getBoundingClientRect().width) - 32,
+          ),
+          height = 245;
+        const left = 55,
+          right = 15,
+          top = 25,
+          bottom = 35,
+          plotWidth = width - left - right,
+          plotHeight = height - top - bottom;
+        const peak = Math.max(100, ...report.daily.map((d) => d.net));
+        const magnitude = 10 ** Math.floor(Math.log10(peak));
+        const maximum =
+          [1, 2, 4, 5, 10].find((step) => step * magnitude >= peak) * magnitude;
+        const x = (index) =>
+          left +
+          (report.daily.length === 1
+            ? plotWidth / 2
+            : (index / (report.daily.length - 1)) * plotWidth);
+        const y = (value) => top + plotHeight * (1 - value / maximum);
+        const svg = svgNode("svg", {
+          viewBox: `0 0 ${width} ${height}`,
+          role: "img",
+          "aria-label": `Daily net product sales from ${selection.start} to ${selection.end}. Use the Inspect a day slider for exact amounts.`,
+        });
+        const defs = svgNode("defs"),
+          gradient = svgNode("linearGradient", {
+            id: "sales-area",
+            x1: "0",
+            x2: "0",
+            y1: "0",
+            y2: "1",
+          });
+        gradient.append(
+          svgNode("stop", {
+            offset: "0%",
+            "stop-color": "#a6c5ab",
+            "stop-opacity": ".32",
+          }),
+          svgNode("stop", {
+            offset: "100%",
+            "stop-color": "#d5e5d4",
+            "stop-opacity": ".03",
+          }),
+        );
+        defs.append(gradient);
+        svg.append(defs);
+        for (let tick = 0; tick <= 4; tick++) {
+          const value = (maximum * tick) / 4,
+            yy = y(value);
+          svg.append(
+            svgNode("line", {
+              x1: left,
+              y1: yy,
+              x2: width - right,
+              y2: yy,
+              stroke: "#edf1eb",
+              "stroke-width": 1,
+              "stroke-dasharray": tick ? "3 4" : "0",
+            }),
+            svgNode(
+              "text",
+              {
+                x: left - 11,
+                y: yy + 3.5,
+                "text-anchor": "end",
+                fill: "#7c8b7c",
+                stroke: "none",
+                "font-size": 9,
+              },
+              money(value, { maximumFractionDigits: 2, notation: "compact" }),
+            ),
+          );
+        }
+        const points = report.daily.map((d, i) => [x(i), y(d.net)]);
+        const path = points
+          .map(([xx, yy], i) => `${i ? "L" : "M"} ${xx} ${yy}`)
+          .join(" ");
+        svg.append(
+          svgNode("path", {
+            d: `${path} L ${x(report.daily.length - 1)} ${y(0)} L ${x(0)} ${y(0)} Z`,
+            fill: "url(#sales-area)",
+            stroke: "none",
+          }),
+          svgNode("path", {
+            d: path,
+            fill: "none",
+            stroke: "#438267",
+            "stroke-width": 2.2,
+            "stroke-linejoin": "round",
+            "stroke-linecap": "round",
+          }),
+        );
+        const tickIndexes = [
+          ...new Set([
+            0,
+            Math.floor((report.daily.length - 1) / 3),
+            Math.floor(((report.daily.length - 1) * 2) / 3),
+            report.daily.length - 1,
+          ]),
+        ];
+        for (const index of tickIndexes)
+          svg.append(
+            svgNode(
+              "text",
+              {
+                x: x(index),
+                y: height - 10,
+                "text-anchor":
+                  index === 0
+                    ? "start"
+                    : index === report.daily.length - 1
+                      ? "end"
+                      : "middle",
+                fill: "#7c8b7c",
+                stroke: "none",
+                "font-size": 9,
+              },
+              shortDate(report.daily[index].date),
+            ),
+          );
+        const guide = svgNode("line", {
+            stroke: "#8eb298",
+            "stroke-width": 1,
+            "stroke-dasharray": "3 4",
+            y1: top,
+            y2: y(0),
+          }),
+          point = svgNode("circle", {
+            r: 4.5,
+            fill: "#4d876c",
+            stroke: "#fff",
+            "stroke-width": 2.5,
+          });
+        svg.append(guide, point);
+        container.append(svg);
+        chartGeometry = { points, guide, point };
+        const slider = $("#chart-cursor");
+        slider.max = String(report.daily.length - 1);
+        slider.value = slider.max;
+        inspectDay();
+      }
+      function inspectDay() {
+        const index = Math.min(
+            Number($("#chart-cursor").value),
+            report.daily.length - 1,
+          ),
+          day = report.daily[index];
+        const [x, y] = chartGeometry.points[index];
+        chartGeometry.guide.setAttribute("x1", String(x));
+        chartGeometry.guide.setAttribute("x2", String(x));
+        chartGeometry.point.setAttribute("cx", String(x));
+        chartGeometry.point.setAttribute("cy", String(y));
+        $("#day-value").textContent =
+          `${shortDate(day.date)} · ${money(day.net)}`;
+        $("#chart-cursor").setAttribute(
+          "aria-valuetext",
+          `${shortDate(day.date)}: ${money(day.net)}, ${day.orders} paid orders`,
+        );
+      }
+      function drawCategories() {
+        const target = $("#category-chart"),
+          legend = $("#category-legend");
+        target.replaceChildren();
+        legend.replaceChildren();
+        if (!report.current.net) {
+          target.append(make("p", "No sales in this view", "legend-empty"));
+          return;
+        }
+        const groups = report.categories.slice(0, 4);
+        if (report.categories.length > 4)
+          groups.push({
+            name: "Other categories",
+            net: report.categories.slice(4).reduce((n, c) => n + c.net, 0),
+          });
+        const svg = svgNode("svg", {
+          viewBox: "0 0 180 180",
+          role: "img",
+          "aria-label":
+            "Net sales by category. Category amounts and rounded shares are listed beside the chart.",
+        });
+        const radius = 62,
+          circumference = 2 * Math.PI * radius;
+        let offset = 0;
+        svg.append(
+          svgNode("circle", {
+            cx: 90,
+            cy: 90,
+            r: radius,
+            fill: "none",
+            stroke: "#f0f4ed",
+            "stroke-width": 20,
+          }),
+        );
+        for (const [i, group] of groups.entries()) {
+          const share = group.net / report.current.net,
+            length = share * circumference;
+          svg.append(
+            svgNode("circle", {
+              cx: 90,
+              cy: 90,
+              r: radius,
+              fill: "none",
+              stroke: colors[i],
+              "stroke-width": 20,
+              "stroke-dasharray": `${Math.max(0, length - 2)} ${circumference - Math.max(0, length - 2)}`,
+              "stroke-dashoffset": -offset,
+              transform: "rotate(-90 90 90)",
+            }),
+          );
+          offset += length;
+          const row = make("div", undefined, "legend-row"),
+            dot = svgNode("svg", {
+              viewBox: "0 0 8 8",
+              width: 8,
+              height: 8,
+              "aria-hidden": "true",
+            });
+          dot.append(
+            svgNode("rect", {
+              width: 8,
+              height: 8,
+              rx: 2,
+              fill: colors[i],
+              stroke: "none",
+            }),
+          );
+          row.append(
+            dot,
+            make("span", group.name),
+            make("strong", money(group.net)),
+            make("small", percent(share, 0)),
+          );
+          legend.append(row);
+        }
+        svg.append(
+          svgNode(
+            "text",
+            {
+              x: 90,
+              y: 85,
+              "text-anchor": "middle",
+              fill: "#7f8b7c",
+              stroke: "none",
+              "font-size": 10,
+            },
+            "NET SALES",
+          ),
+          svgNode(
+            "text",
+            {
+              x: 90,
+              y: 109,
+              "text-anchor": "middle",
+              fill: "#355e46",
+              stroke: "none",
+              "font-size": 21,
+              "font-weight": 550,
+              "letter-spacing": -0.8,
+            },
+            money(report.current.net, {
+              notation: "compact",
+              maximumFractionDigits: 1,
+            }),
+          ),
+        );
+        target.append(svg);
+      }
+      function tableProducts() {
+        const query = $("#product-search").value.trim().toLowerCase();
+        const sort = $("#sort").value;
+        return report.products
+          .filter((p) =>
+            `${p.name} ${p.sku} ${p.category}`.toLowerCase().includes(query),
+          )
+          .sort((a, b) => b[sort] - a[sort] || a.sku.localeCompare(b.sku));
+      }
+      function renderProducts() {
+        const products = tableProducts(),
+          rows = $("#product-rows");
+        rows.replaceChildren();
+        page = Math.min(page, Math.max(0, Math.ceil(products.length / 50) - 1));
+        for (const product of products.slice(page * 50, page * 50 + 50)) {
+          const row = make("tr"),
+            cell = make("td"),
+            name = make("span", undefined, "product-name"),
+            kind =
+              api.CATALOG.find((p) => p.sku === product.sku)?.icon ?? "box",
+            mark = make("span", undefined, `product-mark ${kind}`),
+            copy = make("span");
+          mark.append(icon(kind));
+          copy.append(
+            make("strong", product.name),
+            make("small", `${product.sku} · ${product.category}`),
+          );
+          name.append(mark, copy);
+          cell.append(name);
+          row.append(
+            cell,
+            make("td", count(product.units)),
+            make("td", count(product.orders)),
+            make("td", money(product.net), "money-cell"),
+            make("td", money(product.refunds), "refund-cell"),
+          );
+          const share = make("td"),
+            shareWrap = make("div", undefined, "share-cell"),
+            bar = svgNode("svg", {
+              viewBox: "0 0 46 4",
+              width: 46,
+              height: 4,
+              "aria-hidden": "true",
+            });
+          bar.append(
+            svgNode("rect", {
+              x: 0,
+              y: 0,
+              width: 46,
+              height: 4,
+              rx: 2,
+              fill: "#edf2e9",
+              stroke: "none",
+            }),
+            svgNode("rect", {
+              x: 0,
+              y: 0,
+              width: 46 * (product.share ?? 0),
+              height: 4,
+              rx: 2,
+              fill: "#8daa79",
+              stroke: "none",
+            }),
+          );
+          shareWrap.append(
+            bar,
+            make(
+              "span",
+              product.share === null ? "—" : percent(product.share, 0),
+            ),
+          );
+          share.append(shareWrap);
+          row.append(share);
+          rows.append(row);
+        }
+        if (!products.length) {
+          const row = make("tr"),
+            cell = make(
+              "td",
+              report.products.length
+                ? "No products match your search. Try a name or SKU."
+                : "No paid product sales match these filters.",
+              "empty-row",
+            );
+          cell.colSpan = 6;
+          row.append(cell);
+          rows.append(row);
+        }
+        $("#product-count").textContent = String(report.products.length);
+        $("#table-summary").textContent = products.length
+          ? `Showing ${page * 50 + 1}–${Math.min(products.length, page * 50 + 50)} of ${products.length} products`
+          : "No products in this view";
+        $("#previous-page").disabled = page === 0;
+        $("#next-page").disabled = (page + 1) * 50 >= products.length;
+        $(".pagination").hidden = products.length <= 50;
+        $("#export").disabled = products.length === 0;
+      }
+      function renderInsight() {
+        const top = report.products[0];
+        if (!top) {
+          $("#insight-title").textContent =
+            "A quiet window is still useful information.";
+          $("#insight-copy").textContent =
+            "There are no paid product sales for this selection. Try another period, channel or category.";
+          return;
+        }
+        $("#insight-title").textContent = `${top.name} leads this view.`;
+        $("#insight-copy").textContent =
+          `It contributes ${money(top.net)}${top.share === null ? "" : ` (${percent(top.share, 0)})`} of filtered net sales. ${report.excludedLines ? `${report.excludedLines} pending or cancelled line(s) are excluded.` : "Only paid order lines are included."}`;
+      }
+      function renderReport() {
+        try {
+          report = api.buildReport(dataset, selection);
+          $("#report-error").hidden = true;
+        } catch (error) {
+          if (report) selection = { ...report.selection };
+          $("#report-error").textContent = error.message;
+          $("#report-error").hidden = false;
+          return;
+        }
+        $("#date-caption").textContent =
+          `${shortDate(selection.start)} – ${shortDate(selection.end)} ${selection.end.slice(0, 4)}`;
+        $("#table-context").textContent =
+          report.currency + " · Current filters";
+        const outside =
+          selection.start < dataset.coverage.start ||
+          selection.end > dataset.coverage.end;
+        $("#coverage-note").hidden = !outside;
+        $("#coverage-note").textContent =
+          `This window extends beyond the file’s observed dates (${dataset.coverage.start} to ${dataset.coverage.end}). Only supplied rows are counted; unavailable days are shown as zero.`;
+        $("#source-badge").replaceChildren(
+          make("span"),
+          make(
+            "span",
+            dataset.source === "sample"
+              ? "Fictional sample data"
+              : "Imported CSV · local only",
+          ),
+        );
+        $("#source-title").textContent =
+          dataset.source === "sample"
+            ? "A little insight for your next adventure."
+            : "Your imported data, in focus.";
+        $("#source-description").textContent =
+          dataset.source === "sample"
+            ? "Explore a fictional outdoor retailer: daypacks, tents, trail accessories and camp essentials."
+            : `${sourceName} · ${count(dataset.lines.length)} validated lines · Observed dates ${dataset.coverage.start} to ${dataset.coverage.end}.`;
+        $("#restore").hidden = dataset.source === "sample";
+        page = 0;
+        renderStats();
+        drawTrend();
+        drawCategories();
+        renderProducts();
+        renderInsight();
+      }
+      function download(name, text) {
+        const url = URL.createObjectURL(
+            new Blob([text], { type: "text/csv;charset=utf-8" }),
+          ),
+          anchor = make("a");
+        anchor.href = url;
+        anchor.download = name;
+        document.body.append(anchor);
+        anchor.click();
+        anchor.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+      $("#period").addEventListener("change", () => {
+        const value = $("#period").value;
+        $("#custom-dates").hidden = value !== "custom";
+        if (value !== "custom") {
+          selection = {
+            ...selection,
+            ...api.defaultSelection(dataset, Number(value)),
+            channel: selection.channel,
+            category: selection.category,
+          };
+          $("#start").value = selection.start;
+          $("#end").value = selection.end;
+          renderReport();
+        }
+      });
+      $("#custom-dates").addEventListener("submit", (event) => {
+        event.preventDefault();
+        selection = {
+          ...selection,
+          start: $("#start").value,
+          end: $("#end").value,
+        };
+        renderReport();
+      });
+      for (const id of ["channel", "category"])
+        $(`#${id}`).addEventListener("change", () => {
+          selection = { ...selection, [id]: $(`#${id}`).value };
+          renderReport();
+        });
+      $("#chart-cursor").addEventListener("input", inspectDay);
+      $("#product-search").addEventListener("input", () => {
+        page = 0;
+        renderProducts();
+      });
+      $("#sort").addEventListener("change", () => {
+        page = 0;
+        renderProducts();
+      });
+      $("#previous-page").addEventListener("click", () => {
+        page--;
+        renderProducts();
+      });
+      $("#next-page").addEventListener("click", () => {
+        page++;
+        renderProducts();
+      });
+      $("#export").addEventListener("click", () => {
+        download(
+          `product-report-${selection.start}-to-${selection.end}.csv`,
+          api.exportReport(report, tableProducts()),
+        );
+        toast("Product report exported with the current filters.");
+      });
+      $("#download-template").addEventListener("click", () =>
+        download(
+          "summit-pine-sample-orders.csv",
+          api.exportOrders(api.createSampleDataset().lines),
+        ),
+      );
+      $("#csv-file").addEventListener("change", async (event) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        const generation = ++importGeneration;
+        event.target.disabled = true;
+        $("#import-error").hidden = true;
+        try {
+          if (file.size > 5 * 1024 * 1024)
+            throw new Error(
+              "The CSV limit is 5 MB. Split larger files before importing.",
+            );
+          const next = api.importCSV(await file.text());
+          const nextSelection = api.defaultSelection(next);
+          api.buildReport(next, nextSelection);
+          if (generation !== importGeneration) return;
+          dataset = next;
+          sourceName = file.name;
+          selection = nextSelection;
+          $("#period").value = "30";
+          $("#custom-dates").hidden = true;
+          $("#product-search").value = "";
+          setupFilters();
+          renderReport();
+          $("#import-dialog").close();
+          toast(
+            `Imported ${count(dataset.lines.length)} validated lines. ${dataset.ignoredColumns.length ? "Unrelated columns were ignored." : "Your file stays on this device."}`,
+          );
+        } catch (error) {
+          $("#import-error").textContent = error.message;
+          $("#import-error").hidden = false;
+        } finally {
+          event.target.value = "";
+          event.target.disabled = false;
+        }
+      });
+      $("#restore").addEventListener("click", () => {
+        importGeneration++;
+        dataset = api.createSampleDataset();
+        selection = api.defaultSelection(dataset);
+        sourceName = "";
+        $("#period").value = "30";
+        $("#custom-dates").hidden = true;
+        $("#product-search").value = "";
+        setupFilters();
+        renderReport();
+        toast("Fictional sample data restored.");
+      });
+      document.querySelectorAll("[data-dialog]").forEach((button) =>
+        button.addEventListener("click", () => {
+          if (button.dataset.dialog === "import")
+            $("#import-error").hidden = true;
+          $(`#${button.dataset.dialog}-dialog`).showModal();
+        }),
+      );
+      document
+        .querySelectorAll(".close-dialog")
+        .forEach((button) =>
+          button.addEventListener("click", () =>
+            button.closest("dialog").close(),
+          ),
+        );
+      let resizeTimer;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(drawTrend, 120);
+      });
+      setupFilters();
+      renderReport();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Explore retail sales, refunds and product performance with Summit & Pine’s fictional outdoor-gear demo. Private CSV reporting, with no account required."
+    />
+    <title>Summit & Pine · Retail Insights</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./core.js" defer></script>
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#overview">Skip to dashboard</a>
+    <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <symbol id="i-mountain" viewBox="0 0 24 24">
+        <path d="m2 20 8-15 5 9 3-5 5 11H2Z M7 11l3 2 2-3" />
+      </symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="7" height="7" rx="1.5" />
+        <rect x="14" y="3" width="7" height="7" rx="1.5" />
+        <rect x="3" y="14" width="7" height="7" rx="1.5" />
+        <rect x="14" y="14" width="7" height="7" rx="1.5" />
+      </symbol>
+      <symbol id="i-chart" viewBox="0 0 24 24">
+        <path d="M4 3v17h17 M8 14l4-5 4 3 5-7" />
+      </symbol>
+      <symbol id="i-box" viewBox="0 0 24 24">
+        <path d="m12 3 9 5-9 5-9-5 9-5Z M3 8v9l9 5 9-5V8 M12 13v9" />
+      </symbol>
+      <symbol id="i-upload" viewBox="0 0 24 24">
+        <path d="M12 16V3m-5 5 5-5 5 5 M4 15v6h16v-6" />
+      </symbol>
+      <symbol id="i-download" viewBox="0 0 24 24">
+        <path d="M12 3v13m-5-5 5 5 5-5 M4 17v4h16v-4" />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24">
+        <path d="M4 12h16m-6-6 6 6-6 6" />
+      </symbol>
+      <symbol id="i-chevron" viewBox="0 0 24 24">
+        <path d="m9 5 7 7-7 7" />
+      </symbol>
+      <symbol id="i-search" viewBox="0 0 24 24">
+        <circle cx="10.5" cy="10.5" r="6.5" />
+        <path d="m16 16 5 5" />
+      </symbol>
+      <symbol id="i-calendar" viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="16" rx="2" />
+        <path d="M7 3v5 M17 3v5 M3 11h18" />
+      </symbol>
+      <symbol id="i-close" viewBox="0 0 24 24">
+        <path d="m6 6 12 12 M18 6 6 18" />
+      </symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24">
+        <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z m-4 9 3 3 5-5" />
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24">
+        <path d="m5 12 4 4L19 6" />
+      </symbol>
+      <symbol id="i-money" viewBox="0 0 24 24">
+        <path d="M12 3v18 M17 7c-1-4-10-3-10 1 0 5 10 3 10 8 0 4-9 5-11 0" />
+      </symbol>
+      <symbol id="i-return" viewBox="0 0 24 24">
+        <path d="M4 10h11a6 6 0 0 1 0 12 M4 10l5-5 M4 10l5 5" />
+      </symbol>
+      <symbol id="i-pack" viewBox="0 0 24 24">
+        <path
+          d="M7 7V5a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v2 M5 11a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v10H5V11Z M8 14h8v5H8v-5Z M9 10h6"
+        />
+      </symbol>
+      <symbol id="i-tent" viewBox="0 0 24 24">
+        <path d="m3 21 9-18 9 18H3Z M12 9v12 M12 14l5 7 M5 21H1 M23 21h-4" />
+      </symbol>
+      <symbol id="i-flask" viewBox="0 0 24 24">
+        <path d="M9 2h6v4l3 4v12H6V10l3-4V2Z M9 6h6 M6 12h12 M10 16h4" />
+      </symbol>
+      <symbol id="i-lantern" viewBox="0 0 24 24">
+        <path
+          d="M9 5V4a3 3 0 0 1 6 0v1 M7 7h10l2 13H5L7 7Z M4 22h16 M8 7l1 13 M16 7l-1 13 M8 4h8"
+        />
+      </symbol>
+      <symbol id="i-trail" viewBox="0 0 24 24">
+        <path d="m5 21 4-18 M15 21l3-18 M3 18h5 M13 18h5 M8 5h4 M17 5h4" />
+      </symbol>
+      <symbol id="i-code" viewBox="0 0 24 24">
+        <path d="m7 7-5 5 5 5 M17 7l5 5-5 5 M14 4l-4 16" />
+      </symbol>
+    </svg>
+    <aside class="sidebar" aria-label="Workspace navigation">
+      <a class="brand" href="./index.html"
+        ><span class="brand-symbol"
+          ><svg><use href="#i-mountain" /></svg></span
+        ><span
+          >summit &amp; pine<span class="brand-sub">RETAIL INSIGHTS</span></span
+        ></a
+      >
+      <p class="nav-label">YOUR WORKSPACE</p>
+      <nav>
+        <a class="nav-item active" href="#overview" aria-current="page"
+          ><svg><use href="#i-grid" /></svg>Sales overview</a
+        ><a class="nav-item" href="#products"
+          ><svg><use href="#i-box" /></svg>Product performance</a
+        ><button class="nav-item" data-dialog="import">
+          <svg><use href="#i-upload" /></svg>Import your data</button
+        ><button class="nav-item" data-dialog="definitions">
+          <svg><use href="#i-chart" /></svg>How we calculate
+        </button>
+      </nav>
+      <div class="sidebar-note">
+        <span class="privacy-icon"
+          ><svg><use href="#i-shield" /></svg></span
+        ><strong>Your data stays with you.</strong>
+        <p>Reports run in your browser.<br />No upload. No account.</p>
+        <span class="privacy-tag"><span></span>Private by design</span>
+      </div>
+      <a
+        class="source-link"
+        href="https://github.com/nnacrp0815/ecommerce-insights-dashboard"
+        target="_blank"
+        rel="noreferrer"
+        ><svg><use href="#i-code" /></svg>Explore this project<svg>
+          <use href="#i-arrow" /></svg
+      ></a>
+    </aside>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="breadcrumbs">
+          Workspace<span>/</span><strong>Sales overview</strong>
+        </div>
+        <div class="topbar-right">
+          <span class="source-badge" id="source-badge"
+            ><span></span>Fictional sample data</span
+          ><button
+            class="icon-button"
+            data-dialog="definitions"
+            aria-label="About these metrics"
+          >
+            ?
+          </button>
+        </div>
+      </header>
+      <main id="overview">
+        <section class="page-heading">
+          <div>
+            <p class="eyebrow">THE BIG PICTURE. THE SMALL DETAILS.</p>
+            <h1>Know what’s moving your store.</h1>
+            <p class="page-description">
+              Sales, refunds and the products behind the numbers. All in one
+              clear view.
+            </p>
+          </div>
+          <div class="heading-actions">
+            <button class="button secondary" data-dialog="import">
+              <svg><use href="#i-upload" /></svg>Import CSV</button
+            ><button class="button primary" id="export">
+              <svg><use href="#i-download" /></svg>Export report
+            </button>
+          </div>
+        </section>
+        <section class="demo-note" aria-label="Data source">
+          <div class="note-mark">
+            <svg><use href="#i-mountain" /></svg>
+          </div>
+          <div>
+            <strong id="source-title"
+              >A little insight for your next adventure.</strong
+            >
+            <p id="source-description">
+              Explore a fictional outdoor retailer: daypacks, tents, trail
+              accessories and camp essentials.
+            </p>
+          </div>
+          <button class="text-button" id="restore">
+            Restore sample data<svg><use href="#i-arrow" /></svg>
+          </button>
+        </section>
+        <section class="report-controls" aria-label="Report filters">
+          <div class="period-picker">
+            <svg><use href="#i-calendar" /></svg
+            ><label class="sr-only" for="period">Reporting period</label
+            ><select id="period">
+              <option value="7">Last 7 days</option>
+              <option value="30" selected>Last 30 days</option>
+              <option value="90">Last 90 days</option>
+              <option value="custom">Custom dates</option>
+            </select>
+          </div>
+          <span class="date-caption" id="date-caption"></span>
+          <div class="filter-selects">
+            <label
+              ><span class="sr-only">Sales channel</span
+              ><select id="channel">
+                <option value="all">All channels</option>
+              </select></label
+            ><label
+              ><span class="sr-only">Product category</span
+              ><select id="category">
+                <option value="all">All categories</option>
+              </select></label
+            >
+          </div>
+        </section>
+        <form id="custom-dates" class="custom-dates" hidden>
+          <label>From<input id="start" type="date" required /></label
+          ><label>To<input id="end" type="date" required /></label
+          ><button class="button secondary" type="submit">Apply dates</button>
+        </form>
+        <p class="inline-error" id="report-error" role="alert" hidden></p>
+        <p class="coverage-note" id="coverage-note" hidden></p>
+        <section class="stats" id="stats" aria-label="Sales summary"></section>
+        <div class="chart-grid">
+          <section class="panel trend-panel" aria-labelledby="trend-title">
+            <div class="panel-heading">
+              <div>
+                <h2 id="trend-title">Sales over time</h2>
+                <p>Net product sales, by order date</p>
+              </div>
+              <span class="chart-key"><span></span>Net sales</span>
+            </div>
+            <div id="trend-chart" class="trend-chart"></div>
+            <div class="chart-inspector">
+              <label for="chart-cursor">Inspect a day</label
+              ><input
+                id="chart-cursor"
+                type="range"
+                min="0"
+                max="29"
+                value="29"
+              /><output id="day-value" for="chart-cursor"></output>
+            </div>
+          </section>
+          <section
+            class="panel category-panel"
+            aria-labelledby="category-title"
+          >
+            <div class="panel-heading">
+              <div>
+                <h2 id="category-title">Where sales come from</h2>
+                <p>Net sales by product category</p>
+              </div>
+            </div>
+            <div id="category-chart" class="category-chart"></div>
+            <div id="category-legend" class="category-legend"></div>
+          </section>
+        </div>
+        <section class="insight-strip" aria-label="Report insight">
+          <span class="insight-icon"
+            ><svg><use href="#i-chart" /></svg
+          ></span>
+          <div>
+            <strong id="insight-title"></strong>
+            <p id="insight-copy"></p>
+          </div>
+          <button class="text-button" data-dialog="definitions">
+            Understand the numbers<svg><use href="#i-arrow" /></svg>
+          </button>
+        </section>
+        <section
+          class="panel products-panel"
+          id="products"
+          aria-labelledby="products-title"
+        >
+          <div class="panel-heading">
+            <div>
+              <h2 id="products-title">
+                The products behind your sales
+                <span class="count-pill" id="product-count">8</span>
+              </h2>
+              <p>
+                See what’s selling, what’s being refunded, and each product’s
+                contribution.
+              </p>
+            </div>
+            <span class="table-context" id="table-context"></span>
+          </div>
+          <div class="table-toolbar">
+            <label class="search"
+              ><svg><use href="#i-search" /></svg
+              ><span class="sr-only">Search product table</span
+              ><input
+                id="product-search"
+                type="search"
+                placeholder="Search products or SKU…" /></label
+            ><label class="sort-label"
+              ><span>Sort by</span
+              ><select id="sort" aria-label="Sort products">
+                <option value="net">Net sales</option>
+                <option value="units">Units ordered</option>
+                <option value="refunds">Refunded sales</option>
+              </select></label
+            >
+          </div>
+          <p class="table-scroll-hint">
+            Scroll table for sales &amp; refunds →
+          </p>
+          <div
+            class="table-scroll"
+            tabindex="0"
+            role="region"
+            aria-label="Product performance table, scroll horizontally for all columns"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">PRODUCT</th>
+                  <th scope="col">UNITS</th>
+                  <th scope="col">ORDERS</th>
+                  <th scope="col">NET SALES</th>
+                  <th scope="col">REFUNDS</th>
+                  <th scope="col">SHARE</th>
+                </tr>
+              </thead>
+              <tbody id="product-rows"></tbody>
+            </table>
+          </div>
+          <div class="table-footer">
+            <span id="table-summary"></span>
+            <div class="pagination">
+              <button id="previous-page" aria-label="Previous product page">
+                Previous</button
+              ><button id="next-page" aria-label="Next product page">
+                Next
+              </button>
+            </div>
+            <span class="table-footnote"
+              >Paid orders only · Shipping &amp; tax excluded</span
+            >
+          </div>
+        </section>
+        <footer>
+          <span
+            ><svg><use href="#i-shield" /></svg>Calculated locally. Imported
+            files are never uploaded.</span
+          ><button class="text-button" data-dialog="definitions">
+            Metric definitions &amp; assumptions<svg>
+              <use href="#i-arrow" />
+            </svg>
+          </button>
+        </footer>
+        <p id="toast" class="toast" role="status" aria-live="polite" hidden></p>
+        <noscript
+          ><p class="inline-error">
+            Enable JavaScript to use this dashboard.
+          </p></noscript
+        >
+      </main>
+    </div>
+    <dialog id="import-dialog" aria-labelledby="import-title">
+      <div class="dialog-heading">
+        <div>
+          <p class="eyebrow">FROM ROWS TO A CLEARER PICTURE</p>
+          <h2 id="import-title">Bring your own numbers.</h2>
+        </div>
+        <button class="icon-button close-dialog" aria-label="Close import">
+          <svg><use href="#i-close" /></svg>
+        </button>
+      </div>
+      <p class="dialog-intro">
+        Import a CSV of order lines. We’ll validate the whole file before
+        replacing the current report.
+      </p>
+      <label class="file-picker" for="csv-file"
+        ><span class="upload-mark"
+          ><svg><use href="#i-upload" /></svg></span
+        ><strong>Choose an order-line CSV</strong
+        ><span>Up to 5 MB · 50,000 lines · One currency</span
+        ><input id="csv-file" type="file" accept=".csv,text/csv"
+      /></label>
+      <p id="import-error" class="inline-error" role="alert" hidden></p>
+      <div class="template-note">
+        <strong>Start with the right format.</strong>
+        <p>
+          One row per order line, with identifiers, date, product, channel,
+          quantity, amounts and currency. This uses a documented CSV contract,
+          not an unmodified Shopify export.
+        </p>
+        <button class="button secondary" id="download-template">
+          <svg><use href="#i-download" /></svg>Download sample CSV
+        </button>
+      </div>
+      <p class="privacy-caption">
+        <svg><use href="#i-shield" /></svg>The file stays in memory on this
+        device. Reloading restores the sample data.
+      </p>
+    </dialog>
+    <dialog id="definitions-dialog" aria-labelledby="definitions-title">
+      <div class="dialog-heading">
+        <div>
+          <p class="eyebrow">NO MYSTERY METRICS</p>
+          <h2 id="definitions-title">Know what the numbers mean.</h2>
+        </div>
+        <button
+          class="icon-button close-dialog"
+          aria-label="Close metric definitions"
+        >
+          <svg><use href="#i-close" /></svg>
+        </button>
+      </div>
+      <dl class="metric-definitions">
+        <dt>Net product sales</dt>
+        <dd>
+          Quantity × unit price, minus line discounts and refunded sales.
+          Shipping, taxes, fees and product costs are excluded. This is a sales
+          report, not a profit or accounting statement.
+        </dd>
+        <dt>Paid orders &amp; average order value</dt>
+        <dd>
+          Distinct paid orders, including fully refunded orders. Average order
+          value is net product sales divided by that count. With a category
+          filter, both measures use only matching lines and orders containing
+          them.
+        </dd>
+        <dt>Refunds</dt>
+        <dd>
+          Refund amounts are attributed to the original order date. The file
+          does not include a refund transaction date, so this is not a cash-flow
+          report. Refund percentage uses sales after discounts, before refunds.
+        </dd>
+        <dt>Comparisons</dt>
+        <dd>
+          The immediately preceding period of equal length, using the same
+          filters. Changes are unavailable when the earlier period falls outside
+          the file’s observed date coverage or its baseline is zero.
+        </dd>
+        <dt>Coverage &amp; missing orders</dt>
+        <dd>
+          Reports use only the rows supplied. The dashboard cannot detect
+          omitted orders. Days within the date range without matching rows
+          appear as zero sales. An import’s observed first and last dates do not
+          prove that it is complete.
+        </dd>
+        <dt>Product table</dt>
+        <dd>
+          Units are quantities ordered, not units retained after returns. Orders
+          containing a product are distinct counts and should not be added
+          across products. Share is each product’s contribution to the current
+          filtered net sales.
+        </dd>
+        <dt>Private by default</dt>
+        <dd>
+          No analytics, external fonts, account, upload endpoint or browser
+          storage. Import data stays in page memory and is cleared on reload.
+          Keep confidential CSV files out of public repositories.
+        </dd>
+      </dl>
+    </dialog>
+  </body>
+</html>

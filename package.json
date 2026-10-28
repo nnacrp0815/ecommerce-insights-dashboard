@@ -1,0 +1,26 @@
+{
+  "name": "ecommerce-insights-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A private-by-default ecommerce reporting workspace with CSV import, explainable metrics and a portable outdoor-retail demo.",
+  "engines": {
+    "node": ">=24.14.0 <25"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/build.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --test --experimental-test-coverage dist/test/*.test.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run format:check && npm test",
+    "demo": "npm run build && node dist/src/demo.js",
+    "start": "npm run build && node scripts/serve.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "prettier": "3.9.10",
+    "typescript": "7.0.2"
+  },
+  "license": "MIT"
+}
